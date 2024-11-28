@@ -18,8 +18,8 @@ if __name__ == "__main__":
         
     st.logo(logo_path,size="large")
     
-    st.markdown("# Início")
-    st.sidebar.markdown("# Início")
+    #st.markdown("# Home")
+    st.sidebar.markdown("# Home")
     
     st.image(logo_path)
     

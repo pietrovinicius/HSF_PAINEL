@@ -24,7 +24,7 @@ def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-window
     return None
 
 @st.cache_data 
-def pacientes_query():
+def pacientes_escalas():
     try:
         un = 'PIETRO'
         cs = '192.168.5.9:1521/TASYPRD'
@@ -203,7 +203,83 @@ def pacientes_query():
                                 AND DT_INATIVACAO IS NULL
                                 order by DT_REGISTRO DESC
                                 FETCH FIRST 1 ROWS ONLY
-                            ) PRECAUCAO
+                            ) PRECAUCAO,
+
+                            OBTER_GRUPOS_PACIENTE(APV.NR_ATENDIMENTO, APV.CD_PESSOA_FISICA) GRUPOS_PACIENTE,
+
+                            to_char(
+                                    obter_prim_prescr_mat_hor_gpt(apv.nr_atendimento, apv.cd_pessoa_fisica, 'acmmeireles', '1')
+                                    ,'dd/mm/yyyy hh24:mi:ss') prim_prescr_mat_hora_gpt,
+
+                            (
+                                --SEPARANDO:
+                                SELECT   
+                                    ds_status_analise
+                                FROM	 
+                                table
+                                (
+                                    gpt_utils_pck.get_pending_patients
+                                    (   
+                                    null,
+                                    null,
+                                    null,
+                                    --to_date('27/11/2024 00:00:00',	'dd/mm/yyyy hh24:mi:ss'),
+                                    --to_date('28/11/2024 23:59:59',	'dd/mm/yyyy hh24:mi:ss'),
+                                    SYSDATE - 1 ,
+                                    SYSDATE,
+                                    null,
+                                    '1',
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    'N',
+                                    'N',
+                                    2,
+                                    'N',
+                                    'A',
+                                    'N',
+                                    null,
+                                    'S',
+                                    1,
+                                    2,
+                                    'N',
+                                    'N',
+                                    null,
+                                    'N',
+                                    'E',
+                                    'N',
+                                    'N',
+                                    2,
+                                    'N',
+                                    'N',
+                                    'A',
+                                    'T',
+                                    'N',
+                                    'T',
+                                    'E',
+                                    null,
+                                    2,
+                                    'N',
+                                    'S',
+                                    'pvplima',
+                                    null,
+                                    0,
+                                    '15',
+                                    null,
+                                    'N',
+                                    null,
+                                    null,
+                                    null  
+                                    )
+                                ) 
+                                WHERE 1 = 1
+                                AND NR_ATENDIMENTO = APV.NR_ATENDIMENTO
+                                FETCH FIRST 1 ROWS ONLY
+                            ) GPT_STATUS
+
                         FROM ATENDIMENTO_PACIENTE_V APV
                         LEFT JOIN prescr_medica PM ON (  PM.NR_ATENDIMENTO = APV.NR_ATENDIMENTO )
                         LEFT JOIN prescr_mat_hor PH ON ( PH.NR_PRESCRICAO = PM.NR_PRESCRICAO)
@@ -261,19 +337,65 @@ logo_path = 'HSF_LOGO_-_1228x949_001.png'
 
 if __name__ == "__main__":    
     
-    df = pacientes_query()
+    df = pacientes_escalas()
     
-    st.markdown("""
+    df = df = df.fillna('-')
+    
+    
+    st.markdown(
+        """
     <style>
         .dataframe(
             height: 1000px;
-            width: 100%;
+            width: 2000px;
         )
     </style>
     """, unsafe_allow_html=True)
     
+    #st.markdown("""
+    #    <style>
+    #        .flex-container {
+    #        display: flex;  
+    #        }
+    #        .flex-child {
+    #            flex: 1
+    #        }  
+    #        .flex-child:first-child {
+    #            margin-right: 20px;
+    #        } 
+    #        p {
+    #            position: absolute;
+    #            bottom:0;
+    #            text-align: center;
+    #        }
+    #    </style>
+    #    """, unsafe_allow_html=True)
+    
     st.markdown("# EMORP - Intensiva E")
     st.sidebar.markdown("# EMORP - Intensiva E")
-    st.write("EMORP - Intensiva E")
-    st.dataframe(df[['SETOR','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','MARTINS','GLASGOW','PRECAUCAO']], use_container_width=True)
+    #st.write("EMORP - Intensiva E")
+    #st.write("Escalas:")
+    st.dataframe(df[['PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
+    #st.table(df[['PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']])
 
+    
+    
+    
+    
+
+    # Print the count
+    print(f"usando variavel braden_leve: {df[['BRADEN']].query('BRADEN in @filtro_braden_leve').shape[0]}")
+    
+    #MEWS:
+    
+    #BRADEN:
+    braden_leve = df[['BRADEN']].shape[0]
+    filtro_braden_leve = ["Risco Leve"]
+    filtro_braden_Moderado = ["Risco Moderado"]
+    filtro_braden_Muito_Elevado = ["Risco Muito Elevado"]
+    
+    st.write('Braden - Risco Leve: ' + str(df[['BRADEN']].query('BRADEN in @filtro_braden_leve').shape[0]) 
+             + ' Moderado: ' + str(df[['BRADEN']].query('BRADEN in @filtro_braden_Moderado').shape[0]) 
+             + ' Muito Elevado: ' + str(df[['BRADEN']].query('BRADEN in @filtro_braden_Muito_Elevado').shape[0])
+             )
+    st.write('Total de: '+ str(df.shape[0]) + ' pacientes')
