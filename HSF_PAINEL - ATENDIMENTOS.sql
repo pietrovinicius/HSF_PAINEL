@@ -220,22 +220,23 @@ with SETORESW AS (
         UPPER(SA.DS_SETOR_ATENDIMENTO) ds
     FROM SETOR_ATENDIMENTO  SA
     WHERE SA.IE_SITUACAO <> 'I'
-    AND SA.CD_SETOR_ATENDIMENTO = 171
+    AND SA.CD_SETOR_ATENDIMENTO <> 171
     ORDER BY 2
 
 )
-
 
 SELECT
     APV.CD_SETOR_ATENDIMENTO AS SETOR_ATENDIMENTO,
     OBTER_DESC_SETOR_ATEND(APV.CD_SETOR_ATENDIMENTO) AS SETOR,
     REPLACE(OBTER_LEITO_ATUAL_PAC(APV.NR_ATENDIMENTO),'-',' ') AS LEITO,
     --APV.NR_ATENDIMENTO AS ATEND,
-    INITCAP(ABREVIA_NOME(obter_nome_pf(APV.CD_PESSOA_FISICA), 'A')) AS PACIENTE,
+    --INITCAP(ABREVIA_NOME(obter_nome_pf(APV.CD_PESSOA_FISICA), 'A')) AS PACIENTE,
+    SUBSTR(obter_nome_pf(APV.CD_PESSOA_FISICA), 1, 1) || 
+    SUBSTR(ABREVIA_NOME(obter_nome_pf(APV.CD_PESSOA_FISICA), 'A'), INSTR(ABREVIA_NOME(obter_nome_pf(APV.CD_PESSOA_FISICA), 'A'), ' ')) AS PACIENTE,
     TO_CHAR(APV.DT_ENTRADA,'dd/mm/yy hh24:mi') AS ENTRADA,
     --MEWS
     (
-        select
+        select 
             decode(
                     em.QT_PONTUACAO,
                     0,'Baixo',
@@ -243,8 +244,8 @@ SELECT
                     2,'Baixo',
                     3,'Baixo',
                     4,'Baixo',
-                    5,'Medio',
-                    6,'Medio',
+                    5,'Médio',
+                    6,'Médio',
                     7,'Alto',
                     8,'Alto',
                     9,'Alto',
@@ -377,7 +378,80 @@ SELECT
         FETCH FIRST 1 ROWS ONLY
     ) PRECAUCAO,
 
-    OBTER_GRUPOS_PACIENTE(APV.NR_ATENDIMENTO, APV.CD_PESSOA_FISICA) GRUPOS_PACIENTE
+    OBTER_GRUPOS_PACIENTE(APV.NR_ATENDIMENTO, APV.CD_PESSOA_FISICA) GRUPOS_PACIENTE,
+
+    to_char(
+            obter_prim_prescr_mat_hor_gpt(apv.nr_atendimento, apv.cd_pessoa_fisica, 'acmmeireles', '1')
+            ,'dd/mm/yyyy hh24:mi:ss') prim_prescr_mat_hora_gpt,
+
+    (
+        --SEPARANDO:
+        SELECT   
+            ds_setor_atual || ' - ' || nm_paciente || ' - ' || ds_status_analise
+        FROM	 
+        table
+        (
+            gpt_utils_pck.get_pending_patients
+            (   
+            null,
+            null,
+            null,
+            --to_date('27/11/2024 00:00:00',	'dd/mm/yyyy hh24:mi:ss'),
+            --to_date('28/11/2024 23:59:59',	'dd/mm/yyyy hh24:mi:ss'),
+            SYSDATE - 1 ,
+            SYSDATE,
+            null,
+            '1',
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            'N',
+            'N',
+            2,
+            'N',
+            'A',
+            'N',
+            null,
+            'S',
+            1,
+            2,
+            'N',
+            'N',
+            null,
+            'N',
+            'E',
+            'N',
+            'N',
+            2,
+            'N',
+            'N',
+            'A',
+            'T',
+            'N',
+            'T',
+            'E',
+            null,
+            2,
+            'N',
+            'S',
+            'pvplima',
+            null,
+            0,
+            '15',
+            null,
+            'N',
+            null,
+            null,
+            null  
+            )
+        ) 
+        WHERE 1 = 1
+        AND NR_ATENDIMENTO = APV.NR_ATENDIMENTO
+        FETCH FIRST 1 ROWS ONLY
+    ) GPT_STATUS
 
 FROM ATENDIMENTO_PACIENTE_V APV
 LEFT JOIN prescr_medica PM ON (  PM.NR_ATENDIMENTO = APV.NR_ATENDIMENTO )
@@ -385,7 +459,7 @@ LEFT JOIN prescr_mat_hor PH ON ( PH.NR_PRESCRICAO = PM.NR_PRESCRICAO)
 
 --=============================================== REGRAS DE NEGOCIO: --===============================================
 WHERE PH.dt_horario between SYSDATE - 1 and SYSDATE
-AND APV.CD_SETOR_ATENDIMENTO = 236
+AND APV.CD_SETOR_ATENDIMENTO = 58
 GROUP BY 
     APV.CD_SETOR_ATENDIMENTO,
     APV.CD_PESSOA_FISICA,

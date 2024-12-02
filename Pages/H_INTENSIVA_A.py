@@ -8,7 +8,7 @@ import time
 import plotly.graph_objects as go
 
 #SETOR:
-#EMORP - Intensiva E
+#H - INTENSIVA A
 
 #apontamento para usar o Think Mod
 def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-windows.x64-23.6.0.24.10\\instantclient_23_6"):
@@ -22,7 +22,7 @@ def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-window
   if os.path.exists(caminho_instantclient):
     return caminho_instantclient
   else:
-    print(f"A pasta '{nome_pasta}' não foi encontrada na raiz do aplicativo.")
+    print(f"A pasta '{nome_pasta}' nao foi encontrada na raiz do aplicativo.")
     return None
 
 @st.cache_data 
@@ -290,7 +290,7 @@ def pacientes_escalas():
 
                         --=============================================== REGRAS DE NEGOCIO: --===============================================
                         WHERE PH.dt_horario between SYSDATE - 1 and SYSDATE
-                        AND APV.CD_SETOR_ATENDIMENTO = 236
+                        AND APV.CD_SETOR_ATENDIMENTO = 58
                         AND APV.DT_ALTA IS NULL
                         GROUP BY 
                             APV.CD_SETOR_ATENDIMENTO,
@@ -352,8 +352,9 @@ if __name__ == "__main__":
 
             print(f'df:\n{df}')
 
-            st.markdown("# EMORP - Intensiva E")
-            st.sidebar.markdown("# EMORP - Intensiva E")
+            #SETOR:
+            st.markdown("# H - INTENSIVA A")
+            st.sidebar.markdown("# H - INTENSIVA A")
 
             #Exibindo data frame:
             st.dataframe(df[['ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
