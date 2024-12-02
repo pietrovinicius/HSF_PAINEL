@@ -205,6 +205,7 @@ def pacientes_escalas():
                                 from atendimento_precaucao_v
                                 WHERE IE_SITUACAO = 'A'
                                 AND DT_INATIVACAO IS NULL
+                                AND NR_ATENDIMENTO = APV.NR_ATENDIMENTO
                                 order by DT_REGISTRO DESC
                                 FETCH FIRST 1 ROWS ONLY
                             ) PRECAUCAO,
@@ -357,50 +358,156 @@ if __name__ == "__main__":
             st.sidebar.markdown("# JP - LAR SANTA ISABEL")
 
             #Exibindo data frame:
-            st.dataframe(df[['ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
+            st.dataframe(df[['ATEND','PACIENTE','LEITO','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
             
-            #MEWS
-            mews = df[['MEWS']].shape[0]
-            print(f'Mews: {mews}')
-            mews_Baixo = ["Baixo"]
-            mews_Medio = ["Médio"]
-            mews_Alto = ["Alto"]
-
-            st.write(
-                    'Mews - Baixo: ' + str(df[['MEWS']].query('MEWS in @mews_Baixo').shape[0])
-                    + ' Médio: ' + str(df[['MEWS']].query('MEWS in @mews_Medio').shape[0])
-                    + ' Alto: ' + str(df[['MEWS']].query('MEWS in @mews_Alto').shape[0])
-            )
-
-            #BRADEN:
-            braden = df[['BRADEN']].shape[0]
-            print(f'Braden: {braden}')
-            braden_leve = ["Risco Leve"]
-            braden_Moderado = ["Risco Moderado"]
-            braden_Muito_Elevado = ["Risco Muito Elevado"]
-
-            st.write(
-                    'Braden - Risco Leve: ' + str(df[['BRADEN']].query('BRADEN in @braden_leve').shape[0]) 
-                    + ' Risco Moderado: ' + str(df[['BRADEN']].query('BRADEN in @braden_Moderado').shape[0]) 
-                    + ' Risco Muito Elevado: ' + str(df[['BRADEN']].query('BRADEN in @braden_Muito_Elevado').shape[0])
-                    )
-
-            #MORSE
-            morse = df[['MORSE']].shape[0]
-            print(f'Morse: {morse}')
-            morse_Baixo_Risco = ['Baixo Risco']
-            morse_Risco_Medio = ['Risco Médio']
-            morse_Risco_Elevado = ['Risco Elevado']
-            
-            st.write(
-                    'Morse - Baixo Risco: ' + str(df[['MORSE']].query('MORSE in @morse_Baixo_Risco').shape[0])
-                    + ' Risco Médio: ' + str(df[['MORSE']].query('MORSE in @morse_Risco_Medio').shape[0])
-                    + ' Risco Elevado: ' + str(df[['MORSE']].query('MORSE in @morse_Risco_Elevado').shape[0])
-            )
-
             #Total de Pacientes:
             print(f'Total de: {str(df.shape[0])} pacientes')
-            st.write('Total de: '+ str(df.shape[0]) + ' pacientes')
+            st.write('### '+ str(df.shape[0]) + ' pacientes')
+            
+            st.write('\n\n\n')
+            st.write('\n\n\n')
+            st.write('\n\n\n')
+            st.write('\n\n\n')
+            st.write('___________________')
+            
+            
+            st.write('## Dados Sintéticos:')
+            
+            # Criando três colunas
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                #MEWS
+                mews = df[['MEWS']].shape[0]
+                print(f'Mews: {mews}')
+                mews_Baixo = ["Baixo"]
+                mews_Medio = ["Médio"]
+                mews_Alto = ["Alto"]
+                st.write('#### Mews:')
+                st.write(
+                        'Baixo: ' + str(df[['MEWS']].query('MEWS in @mews_Baixo').shape[0])
+                        + '\n\nMédio: ' + str(df[['MEWS']].query('MEWS in @mews_Medio').shape[0])
+                        + '\n\nAlto: ' + str(df[['MEWS']].query('MEWS in @mews_Alto').shape[0])
+                )
+                
+                st.write('\n\n\n')
+                st.write('___________________')
+                
+                
+                #GLASGOW
+                GLASGOW = df[['GLASGOW']].shape[0]
+                print(f'GLASGOW: {GLASGOW}')
+                GLASGOW_disfun_severa = ['disfunção / lesão encefálica severa']
+                GLASGOW_disfun_moderada = ['disfunção / lesão encefálica moderada']
+                GLASGOW_disfun_leve = ['disfunção / lesão encefálica leve']
+                GLASGOW_normal = ['normal']
+                st.write('### Glasglow:')
+                st.write(
+                        'Severa: ' + str(df[['GLASGOW']].query('GLASGOW in @GLASGOW_disfun_severa').shape[0])
+                        + '\n\nModerada: ' + str(df[['GLASGOW']].query('GLASGOW in @GLASGOW_disfun_moderada').shape[0])
+                        + '\n\nLeve: ' + str(df[['GLASGOW']].query('GLASGOW in @GLASGOW_disfun_leve').shape[0])
+                        + '\n\nNormal: ' + str(df[['GLASGOW']].query('GLASGOW in @GLASGOW_normal').shape[0])
+                )
+                
+                st.write('\n\n\n')
+                st.write('___________________')
+                
+                
+                #PRECAUCAO
+                PRECAUCAO = df[['PRECAUCAO']].shape[0]
+                print(f'PRECAUCAO: {PRECAUCAO}')
+                PRECAUCAO_Contato_Rastreando = ['Contato / Rastreando']
+                PRECAUCAO_Rastreamento = ['Rastreamento']
+                PRECAUCAO_Aerossois = ['Aerossóis']
+                PRECAUCAO_Clostridium_Contato = ['Clostridium - Contato (Leito Privativo)']
+                PRECAUCAO_Contato = ['Contato']
+                PRECAUCAO_Covid_Cont_Aeross = ['Covid-19 Contato + Aerossóis']
+                PRECAUCAO_Covid_Got_Cont = ['Covid-19 Gotículas + Contato']
+                PRECAUCAO_Gotículas = ['Gotículas']
+                PRECAUCAO_Herpes = ['Herpes Zoster Disseminada  Aerossol + Contato']
+                PRECAUCAO_Contato_Isolamento = ['Precaução De Contato Com Isolamento (Quarto Privativo)']
+                st.write('#### Precaução:')
+                st.write(
+                        '\n\nContato / Rastreando: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Contato_Rastreando').shape[0])
+                        + ' \n\nRastreamento: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Rastreamento').shape[0])
+                        + ' \n\nAerossóis: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Aerossois').shape[0])
+                        + ' \n\nContato: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Contato').shape[0])
+                        + ' \n\nGotículas: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Gotículas').shape[0])
+                        + ' \n\nClostridium - Contato (Leito Privativo): ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Clostridium_Contato').shape[0])
+                        + ' \n\nCovid-19 Contato + Aerossóis: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Covid_Cont_Aeross').shape[0])
+                        + ' \n\nCovid-19 Gotículas + Contato: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Covid_Got_Cont').shape[0])
+                        + ' \n\nHerpes Zoster: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Herpes').shape[0])
+                        + ' \n\nPrecaução De Contato Com Isolamento (Quarto Privativo): ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Contato_Isolamento').shape[0])
+                )
+                
+                st.write('\n\n\n')
+                st.write('___________________')
+                
+                
+
+            with col2:
+                #BRADEN:
+                braden = df[['BRADEN']].shape[0]
+                print(f'Braden: {braden}')
+                braden_leve = ["Risco Leve"]
+                braden_Moderado = ["Risco Moderado"]
+                braden_Muito_Elevado = ["Risco Muito Elevado"]
+                st.write('### Braden:')
+                st.write('Risco Leve: ' + str(df[['BRADEN']].query('BRADEN in @braden_leve').shape[0]) 
+                        + '\n\nRisco Moderado: ' + str(df[['BRADEN']].query('BRADEN in @braden_Moderado').shape[0]) 
+                        + '\n\nRisco Muito Elevado: ' + str(df[['BRADEN']].query('BRADEN in @braden_Muito_Elevado').shape[0])
+                        )
+                
+                st.write('\n\n\n')
+                st.write('___________________')
+                
+                #FUGULIN
+                FUGULIN = df[['FUGULIN']].shape[0]
+                print(f'FUGULIN: {FUGULIN}')
+                FUGULIN_Cuidados_Minimos = ['Cuidados Mínimos']
+                FUGULIN_Cuidados_Intermediarios = ['Cuidados Intermediários']
+                FUGULIN_Alta_Dependencia = ['Alta Dependência']
+                FUGULIN_Cuidados_Semi = ['Cuidados Semi Intensivos']
+                st.write('### Fugulin:')
+                st.write(
+                        'Cuidados Mínimos: ' + str(df[['FUGULIN']].query('FUGULIN in @FUGULIN_Cuidados_Minimos').shape[0])
+                        + '\n\nCuidados Intermediários: ' + str(df[['FUGULIN']].query('FUGULIN in @FUGULIN_Cuidados_Intermediarios').shape[0])
+                        + '\n\nAlta Dependência: ' + str(df[['FUGULIN']].query('FUGULIN in @FUGULIN_Alta_Dependencia').shape[0])
+                        + '\n\nCuidados Semi Intensivos: ' + str(df[['FUGULIN']].query('FUGULIN in @FUGULIN_Cuidados_Semi').shape[0])
+                )
+                
+                st.write('\n\n\n')
+                st.write('___________________')
+            
+                
+                #MORSE
+                morse = df[['MORSE']].shape[0]
+                print(f'Morse: {morse}')
+                morse_Baixo_Risco = ['Baixo Risco']
+                morse_Risco_Medio = ['Risco Médio']
+                morse_Risco_Elevado = ['Risco Elevado']
+                st.write('### Morse:')
+                st.write(
+                        'Risco Baixo: ' + str(df[['MORSE']].query('MORSE in @morse_Baixo_Risco').shape[0])
+                        + '\n\nRisco Médio: ' + str(df[['MORSE']].query('MORSE in @morse_Risco_Medio').shape[0])
+                        + '\n\nRisco Elevado: ' + str(df[['MORSE']].query('MORSE in @morse_Risco_Elevado').shape[0])
+                )
+                
+                st.write('\n\n\n')
+                st.write('___________________')
+            
+            
+
+            
+
+            
+            
+            
+            
+            
+            
+            
+            
 
             print('Pausar por 60 segundos!')
             time.sleep(60)  # Pausar por 5 minutos

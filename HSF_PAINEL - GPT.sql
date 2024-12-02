@@ -103,7 +103,7 @@ table
 	  2,
 	  'N',
 	  'S',
-	  'acmmeireles',
+	  'pvplima',
 	  null,
 	  0,
 	  '15',
@@ -115,6 +115,7 @@ table
 	)
 ) 
 WHERE 1 = 1
+AND NR_ATENDIMENTO = 648396
 ORDER BY 
 ds_setor_atual DESC
 --obter_prim_prescr_mat_hor_gpt(nr_atendimento, cd_pessoa_fisica, 'acmmeireles', '1')
