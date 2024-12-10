@@ -8,7 +8,7 @@ import time
 import plotly.graph_objects as go
 import locale
 
-st.set_page_config(layout="wide")
+locale.setlocale(locale.LC_NUMERIC, 'en_US')  # Define a localização para inglês dos EUA
 
 #SETOR:
 #JP - U.I. 3 ANDAR

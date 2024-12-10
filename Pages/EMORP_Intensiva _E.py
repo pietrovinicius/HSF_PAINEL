@@ -7,10 +7,6 @@ import pandas as pd
 import time
 import plotly.graph_objects as go
 
-
-st.set_page_config(layout="wide")
-
-
 #SETOR:
 #EMORP - Intensiva E
 import datetime
