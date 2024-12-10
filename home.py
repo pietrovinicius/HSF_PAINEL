@@ -16,5 +16,5 @@ logo_path = 'HSF_LOGO_-_1228x949_001.png'
 
 if __name__ == "__main__":    
     st.logo(logo_path,size="large")
-    st.sidebar.markdown("# Home")
+    #st.sidebar.markdown("# Home")
     st.image(logo_path)

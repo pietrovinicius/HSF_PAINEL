@@ -8,7 +8,8 @@ import time
 import plotly.graph_objects as go
 import locale
 
-st.set_page_config(layout="wide")
+#Configurando pagina para exibicao em modo WIDE:
+st.set_page_config(layout="wide",initial_sidebar_state="expanded")
 
 #SETOR:
 #JP - U.I. 3 ANDAR
@@ -336,178 +337,89 @@ logo_path = 'HSF_LOGO_-_1228x949_001.png'
 
 if __name__ == "__main__":
     try:
-        while True:
-                
-            st.logo(logo_path,size="large")
+        st.logo(logo_path,size="large")
 
-            df = pacientes_escalas()
-
-            df = df = df.fillna('-')
-            
-            df['ATEND'] = df['ATEND'].apply(lambda x: "{:.0f}".format(x))
-            
-            #df['LEITO'] = df['LEITO'].replace('.', '', regex=True)
-            
-            #df = df.replace('.', '', regex=True)
-            
-            print(f'df:\n{df[['LEITO']]}')
-
+        df = pacientes_escalas()
+        #Substitui os espancos em branco por hifen:
+        df = df = df.fillna('-')
+        
+        df['ATEND'] = df['ATEND'].apply(lambda x: "{:.0f}".format(x))
+        
+        #df['LEITO'] = df['LEITO'].replace('.', '', regex=True)
+        
+        #df = df.replace('.', '', regex=True)
+        
+        #print(f'df:\n{df[['LEITO','ATEND','PACIENTE']]}')
+        
+        with st.sidebar:
             #SETOR:
-            st.markdown("# JP - U.I. 3 ANDAR")
-            st.sidebar.markdown("# JP - U.I. 3 ANDAR")
-
+            #st.markdown("# JP - U.I. 3 ANDAR")
+            #st.sidebar.markdown("# JP - U.I. 3 ANDAR")
+            
+            st.write('# Indicadores:')
+            
+            
+            #print(f'total_leitos: {total_leitos}')
+            #print(f'total_livres: {total_livres}')
+            #st.write(f"Leitos: ")
+            
+            #BRADEN
+            BRADEN = df[['BRADEN']].shape[0]
+            BRADEN = df[df['BRADEN'] != '-']
+            BRADEN = len(BRADEN)
+            print(f'BRADEN: {BRADEN}')
+            st.write(f'Braden: {BRADEN}')
+            
+            #FUGULIN
+            FUGULIN = df[['FUGULIN']].shape[0]
+            FUGULIN = df[df['FUGULIN'] != '-']
+            FUGULIN = len(FUGULIN)
+            print(f'FUGULIN: {FUGULIN}')
+            st.write(f'Fugulin: {FUGULIN}')
+            
+            #GLASGOW
+            GLASGOW = df[['GLASGOW']].shape[0]
+            GLASGOW = df[df['GLASGOW'] != '-']
+            GLASGOW = len(GLASGOW)
+            print(f'GLASGOW: {GLASGOW}')
+            st.write(f'Glasgow: {GLASGOW}')
+        
+            #MEWS
+            MEWS = df[['MEWS']].shape[0]
+            MEWS = df[df['MEWS'] != '-']
+            MEWS = len(MEWS)
+            print(f'MEWS: {MEWS}')
+            st.write(f'Mews: {MEWS}')
+            
+            #MORSE
+            MORSE = df[['MORSE']].shape[0]
+            MORSE = df[df['MORSE'] != '-']
+            MORSE = len(MORSE)
+            print(f'MORSE: {MORSE}')
+            st.write(f'Morse: {MORSE}')
+            
+            
+        while True:
+            st.write("# JP - U.I. 3 ANDAR")
+            
             #Exibindo data frame:
             st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
             
             #Total de Pacientes:
             print(f'Total de: {str(df.shape[0])} pacientes')
-            st.write('### '+ str(df.shape[0]) + ' pacientes')
+            st.write('### Ocupação: ' + str(df.shape[0]) + ' pacientes')
             
             st.write('\n\n\n')
             st.write('\n\n\n')
             st.write('\n\n\n')
             st.write('\n\n\n')
             st.write('___________________')
-            
-            
-            st.write('## Dados Sintéticos:')
-            
-            # Criando três colunas
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                #MEWS
-                mews = df[['MEWS']].shape[0]
-                print(f'Mews: {mews}')
-                mews_Baixo = ["Baixo"]
-                mews_Medio = ["Médio"]
-                mews_Alto = ["Alto"]
-                #st.write('#### Mews:')
-                #st.write( str(mews) )
-                #st.write('\n\n\n')
-                #st.write('___________________')
-                
-                
-                #GLASGOW
-                GLASGOW = df[['GLASGOW']].shape[0]
-                print(f'GLASGOW: {GLASGOW}')
-                GLASGOW_disfun_severa = ['disfunção / lesão encefálica severa']
-                GLASGOW_disfun_moderada = ['disfunção / lesão encefálica moderada']
-                GLASGOW_disfun_leve = ['disfunção / lesão encefálica leve']
-                GLASGOW_normal = ['normal']
-                st.write('### Glasglow:')
-                st.write(
-                        'Severa: ' + str(df[['GLASGOW']].query('GLASGOW in @GLASGOW_disfun_severa').shape[0])
-                        + '\n\nModerada: ' + str(df[['GLASGOW']].query('GLASGOW in @GLASGOW_disfun_moderada').shape[0])
-                        + '\n\nLeve: ' + str(df[['GLASGOW']].query('GLASGOW in @GLASGOW_disfun_leve').shape[0])
-                        + '\n\nNormal: ' + str(df[['GLASGOW']].query('GLASGOW in @GLASGOW_normal').shape[0])
-                )
-                
-                st.write('\n\n\n')
-                st.write('___________________')
-                
-                
-                #PRECAUCAO
-                PRECAUCAO = df[['PRECAUCAO']].shape[0]
-                print(f'PRECAUCAO: {PRECAUCAO}')
-                PRECAUCAO_Contato_Rastreando = ['Contato / Rastreando']
-                PRECAUCAO_Rastreamento = ['Rastreamento']
-                PRECAUCAO_Aerossois = ['Aerossóis']
-                PRECAUCAO_Clostridium_Contato = ['Clostridium - Contato (Leito Privativo)']
-                PRECAUCAO_Contato = ['Contato']
-                PRECAUCAO_Covid_Cont_Aeross = ['Covid-19 Contato + Aerossóis']
-                PRECAUCAO_Covid_Got_Cont = ['Covid-19 Gotículas + Contato']
-                PRECAUCAO_Gotículas = ['Gotículas']
-                PRECAUCAO_Herpes = ['Herpes Zoster Disseminada  Aerossol + Contato']
-                PRECAUCAO_Contato_Isolamento = ['Precaução De Contato Com Isolamento (Quarto Privativo)']
-                st.write('#### Precaução:')
-                st.write(
-                        '\n\nContato / Rastreando: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Contato_Rastreando').shape[0])
-                        + ' \n\nRastreamento: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Rastreamento').shape[0])
-                        + ' \n\nAerossóis: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Aerossois').shape[0])
-                        + ' \n\nContato: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Contato').shape[0])
-                        + ' \n\nGotículas: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Gotículas').shape[0])
-                        + ' \n\nClostridium - Contato (Leito Privativo): ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Clostridium_Contato').shape[0])
-                        + ' \n\nCovid-19 Contato + Aerossóis: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Covid_Cont_Aeross').shape[0])
-                        + ' \n\nCovid-19 Gotículas + Contato: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Covid_Got_Cont').shape[0])
-                        + ' \n\nHerpes Zoster: ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Herpes').shape[0])
-                        + ' \n\nPrecaução De Contato Com Isolamento (Quarto Privativo): ' + str(df[['PRECAUCAO']].query('PRECAUCAO in @PRECAUCAO_Contato_Isolamento').shape[0])
-                )
-                
-                st.write('\n\n\n')
-                st.write('___________________')
-                
-                
-
-            with col2:
-                #BRADEN:
-                braden = df[['BRADEN']].shape[0]
-                print(f'Braden: {braden}')
-                braden_leve = ["Risco Leve"]
-                braden_Moderado = ["Risco Moderado"]
-                braden_Muito_Elevado = ["Risco Muito Elevado"]
-                st.write('### Braden:')
-                st.write('Risco Leve: ' + str(df[['BRADEN']].query('BRADEN in @braden_leve').shape[0]) 
-                        + '\n\nRisco Moderado: ' + str(df[['BRADEN']].query('BRADEN in @braden_Moderado').shape[0]) 
-                        + '\n\nRisco Muito Elevado: ' + str(df[['BRADEN']].query('BRADEN in @braden_Muito_Elevado').shape[0])
-                        )
-                
-                st.write('\n\n\n')
-                st.write('___________________')
-                
-                #FUGULIN
-                FUGULIN = df[['FUGULIN']].shape[0]
-                print(f'FUGULIN: {FUGULIN}')
-                FUGULIN_Cuidados_Minimos = ['Cuidados Mínimos']
-                FUGULIN_Cuidados_Intermediarios = ['Cuidados Intermediários']
-                FUGULIN_Alta_Dependencia = ['Alta Dependência']
-                FUGULIN_Cuidados_Semi = ['Cuidados Semi Intensivos']
-                st.write('### Fugulin:')
-                st.write(
-                        'Cuidados Mínimos: ' + str(df[['FUGULIN']].query('FUGULIN in @FUGULIN_Cuidados_Minimos').shape[0])
-                        + '\n\nCuidados Intermediários: ' + str(df[['FUGULIN']].query('FUGULIN in @FUGULIN_Cuidados_Intermediarios').shape[0])
-                        + '\n\nAlta Dependência: ' + str(df[['FUGULIN']].query('FUGULIN in @FUGULIN_Alta_Dependencia').shape[0])
-                        + '\n\nCuidados Semi Intensivos: ' + str(df[['FUGULIN']].query('FUGULIN in @FUGULIN_Cuidados_Semi').shape[0])
-                )
-                
-                st.write('\n\n\n')
-                st.write('___________________')
-            
-                
-                #MORSE
-                morse = df[['MORSE']].shape[0]
-                print(f'Morse: {morse}')
-                morse_Baixo_Risco = ['Baixo Risco']
-                morse_Risco_Medio = ['Risco Médio']
-                morse_Risco_Elevado = ['Risco Elevado']
-                st.write('### Morse:')
-                st.write(
-                        'Risco Baixo: ' + str(df[['MORSE']].query('MORSE in @morse_Baixo_Risco').shape[0])
-                        + '\n\nRisco Médio: ' + str(df[['MORSE']].query('MORSE in @morse_Risco_Medio').shape[0])
-                        + '\n\nRisco Elevado: ' + str(df[['MORSE']].query('MORSE in @morse_Risco_Elevado').shape[0])
-                )
-                
-                st.write('\n\n\n')
-                st.write('___________________')
-            
-            
-
-            
-
-            
-            
-            
-            
-            
-            
-            
-            
-
+                        
             print(f'Pausar por 60 segundos!')
             print(f'{agora()}\n')
             time.sleep(60)  # Pausar por 60 segundos            
             print(f'\nst.experimental_rerun()\n')
-            st.rerun()
+            #st.rerun()
         
     except Exception as err: 
         print(f"Inexperado {err=}, {type(err)=}") 
