@@ -7,13 +7,14 @@ import pandas as pd
 import time
 import plotly.graph_objects as go
 import locale
+import datetime
 
 #Configurando pagina para exibicao em modo WIDE:
 st.set_page_config(layout="wide",initial_sidebar_state="expanded")
 
 #SETOR:
 #JP - U.I. 3 ANDAR
-import datetime
+
 def agora():
     agora = datetime.datetime.now()
     agora = agora.strftime("%Y-%m-%d %H-%M-%S")
@@ -398,6 +399,13 @@ if __name__ == "__main__":
             print(f'MORSE: {MORSE}')
             st.write(f'Morse: {MORSE}')
             
+            #PRECAUCAO
+            PRECAUCAO = df[['PRECAUCAO']].shape[0]
+            PRECAUCAO = df[df['PRECAUCAO'] != '-']
+            PRECAUCAO = len(PRECAUCAO)
+            print(f'PRECAUCAO: {PRECAUCAO}')
+            st.write(f'Precaução: {PRECAUCAO}')
+            
             
         while True:
             st.write("# JP - U.I. 3 ANDAR")
@@ -419,7 +427,7 @@ if __name__ == "__main__":
             print(f'{agora()}\n')
             time.sleep(60)  # Pausar por 60 segundos            
             print(f'\nst.experimental_rerun()\n')
-            #st.rerun()
+            st.rerun()
         
     except Exception as err: 
         print(f"Inexperado {err=}, {type(err)=}") 
