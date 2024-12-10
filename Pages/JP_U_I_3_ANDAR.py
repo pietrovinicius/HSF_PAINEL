@@ -6,9 +6,17 @@ import oracledb
 import pandas as pd
 import time
 import plotly.graph_objects as go
+import locale
+
+locale.setlocale(locale.LC_NUMERIC, 'en_US')  # Define a localização para inglês dos EUA
 
 #SETOR:
 #JP - U.I. 3 ANDAR
+import datetime
+def agora():
+    agora = datetime.datetime.now()
+    agora = agora.strftime("%Y-%m-%d %H-%M-%S")
+    return str(agora)
 
 #apontamento para usar o Think Mod
 def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-windows.x64-23.6.0.24.10\\instantclient_23_6"):
@@ -67,23 +75,8 @@ def pacientes_escalas():
                             TO_CHAR(APV.DT_ENTRADA,'dd/mm/yy hh24:mi') AS ENTRADA,
                             --MEWS
                             (
-                                select
-                                    decode(
-                                            em.QT_PONTUACAO,
-                                            0,'Baixo',
-                                            1,'Baixo',
-                                            2,'Baixo',
-                                            3,'Baixo',
-                                            4,'Baixo',
-                                            5,'Medio',
-                                            6,'Medio',
-                                            7,'Alto',
-                                            8,'Alto',
-                                            9,'Alto',
-                                            10,'Alto',
-                                            11,'Alto',
-                                            12,'Alto') 
-                                    CLASSIFICACAO
+                                select 
+                                em.QT_PONTUACAO as CLASSIFICACAO
                                 from ESCALA_MEWS EM, atendimento_paciente_v A
                                 where A.nr_atendimento = em.nr_atendimento
                                 and A.dt_alta is null
@@ -350,15 +343,21 @@ if __name__ == "__main__":
             df = pacientes_escalas()
 
             df = df = df.fillna('-')
-
-            print(f'df:\n{df}')
+            
+            df['ATEND'] = df['ATEND'].apply(lambda x: "{:.0f}".format(x))
+            
+            #df['LEITO'] = df['LEITO'].replace('.', '', regex=True)
+            
+            #df = df.replace('.', '', regex=True)
+            
+            print(f'df:\n{df[['LEITO']]}')
 
             #SETOR:
             st.markdown("# JP - U.I. 3 ANDAR")
             st.sidebar.markdown("# JP - U.I. 3 ANDAR")
 
             #Exibindo data frame:
-            st.dataframe(df[['ATEND','PACIENTE','LEITO','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
+            st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
             
             #Total de Pacientes:
             print(f'Total de: {str(df.shape[0])} pacientes')
@@ -383,15 +382,10 @@ if __name__ == "__main__":
                 mews_Baixo = ["Baixo"]
                 mews_Medio = ["Médio"]
                 mews_Alto = ["Alto"]
-                st.write('#### Mews:')
-                st.write(
-                        'Baixo: ' + str(df[['MEWS']].query('MEWS in @mews_Baixo').shape[0])
-                        + '\n\nMédio: ' + str(df[['MEWS']].query('MEWS in @mews_Medio').shape[0])
-                        + '\n\nAlto: ' + str(df[['MEWS']].query('MEWS in @mews_Alto').shape[0])
-                )
-                
-                st.write('\n\n\n')
-                st.write('___________________')
+                #st.write('#### Mews:')
+                #st.write( str(mews) )
+                #st.write('\n\n\n')
+                #st.write('___________________')
                 
                 
                 #GLASGOW
@@ -509,9 +503,9 @@ if __name__ == "__main__":
             
             
 
-            print('Pausar por 60 segundos!')
-            time.sleep(60)  # Pausar por 5 minutos
-            
+            print(f'Pausar por 60 segundos!')
+            print(f'{agora()}\n')
+            time.sleep(60)  # Pausar por 60 segundos            
             print(f'\nst.experimental_rerun()\n')
             st.rerun()
         

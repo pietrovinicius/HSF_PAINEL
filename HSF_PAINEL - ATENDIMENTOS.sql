@@ -237,22 +237,7 @@ SELECT
     --MEWS
     (
         select 
-            decode(
-                    em.QT_PONTUACAO,
-                    0,'Baixo',
-                    1,'Baixo',
-                    2,'Baixo',
-                    3,'Baixo',
-                    4,'Baixo',
-                    5,'Médio',
-                    6,'Médio',
-                    7,'Alto',
-                    8,'Alto',
-                    9,'Alto',
-                    10,'Alto',
-                    11,'Alto',
-                    12,'Alto') 
-            CLASSIFICACAO
+        em.QT_PONTUACAO as CLASSIFICACAO
         from ESCALA_MEWS EM, atendimento_paciente_v A
         where A.nr_atendimento = em.nr_atendimento
         and A.dt_alta is null
