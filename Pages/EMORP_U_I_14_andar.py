@@ -13,7 +13,8 @@ import datetime
 st.set_page_config(layout="wide",initial_sidebar_state="expanded")
 
 #SETOR:
-#JP - U.I. 3 ANDAR
+#EMORP - U.I. 14º andar
+#CD_SETOR_ATEND (68)
 
 def agora():
     agora = datetime.datetime.now()
@@ -286,7 +287,7 @@ def pacientes_escalas():
 
                         --=============================================== REGRAS DE NEGOCIO: --===============================================
                         WHERE PH.dt_horario between SYSDATE - 1 and SYSDATE
-                        AND APV.CD_SETOR_ATENDIMENTO = 56
+                        AND APV.CD_SETOR_ATENDIMENTO = 68
                         AND APV.DT_ALTA IS NULL
                         GROUP BY 
                             APV.CD_SETOR_ATENDIMENTO,
@@ -340,32 +341,17 @@ logo_path = 'HSF_LOGO_-_1228x949_001.png'
 if __name__ == "__main__":
     try:
         st.logo(logo_path,size="large")
-
         df = pacientes_escalas()
         #Substitui os espancos em branco por hifen:
         df = df = df.fillna('-')
-        
+        # Removendo Ao zero no fim
         df['ATEND'] = df['ATEND'].apply(lambda x: "{:.0f}".format(x))
-        
-        # Convertendo a coluna 'MEWS' para inteiro
-        #df['MEWS'] = df['MEWS'].astype(int)
-        
         # Removendo a parte decimal utilizando o método str
         df['MEWS'] = df['MEWS'].astype(str).str.replace('.0', '')
-        
-        #print(f'data_frame:\n{df[['MEWS']]}')
                 
         with st.sidebar:
-            #SETOR:
-            #st.markdown("# JP - U.I. 3 ANDAR")
-            #st.sidebar.markdown("# JP - U.I. 3 ANDAR")
-            
             st.write('# Indicadores:')
-                        
-            #print(f'total_leitos: {total_leitos}')
-            #print(f'total_livres: {total_livres}')
-            #st.write(f"Leitos: ")
-            
+
             #BRADEN
             BRADEN = df[['BRADEN']].shape[0]
             BRADEN = df[df['BRADEN'] != '-']
@@ -410,7 +396,7 @@ if __name__ == "__main__":
             
             
         while True:
-            st.write("# JP - U.I. 3 ANDAR")
+            st.write("# EMORP - U.I. 14º andar")
             
             #Exibindo data frame:
             st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
