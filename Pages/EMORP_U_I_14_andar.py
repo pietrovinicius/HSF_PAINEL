@@ -411,9 +411,9 @@ if __name__ == "__main__":
             st.write('\n\n\n')
             st.write('___________________')
                         
-            print(f'Pausar por 60 segundos!')
+            print(f'Pausar por 90 segundos!')
             print(f'{agora()}\n')
-            time.sleep(60)  # Pausar por 60 segundos            
+            time.sleep(90)  # Pausar por 90 segundos            
             print(f'\nst.experimental_rerun()\n')
             st.rerun()
         

@@ -12,6 +12,9 @@ import datetime
 #Configurando pagina para exibicao em modo WIDE:
 st.set_page_config(layout="wide",initial_sidebar_state="expanded",page_title="JP - U.I. 3º ANDAR")
 
+
+
+
 #SETOR:
 #JP - U.I. 3 ANDAR
 
@@ -354,6 +357,13 @@ if __name__ == "__main__":
         df['MEWS'] = df['MEWS'].astype(str).str.replace('.0', '')
         
         #print(f'data_frame:\n{df[['MEWS']]}')
+        
+        # Criando um estilo personalizado para o DataFrame
+        st.markdown("""
+        <style>
+        .dataframe(display: block; width: 100% !important;)
+        </style>
+        """, unsafe_allow_html=True)
                 
         with st.sidebar:
             #SETOR:
@@ -425,9 +435,9 @@ if __name__ == "__main__":
             st.write('\n\n\n')
             st.write('___________________')
                         
-            print(f'Pausar por 60 segundos!')
+            print(f'Pausar por 90 segundos!')
             print(f'{agora()}\n')
-            time.sleep(60)  # Pausar por 60 segundos            
+            time.sleep(90)  # Pausar por 90 segundos            
             print(f'\nst.experimental_rerun()\n')
             st.rerun()
         
