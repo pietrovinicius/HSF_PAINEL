@@ -35,7 +35,7 @@ def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-window
     print(f"A pasta '{nome_pasta}' nao foi encontrada na raiz do aplicativo.")
     return None
 
-@st.cache_data 
+#@st.cache_data 
 def pacientes_escalas():
     try:
         un = 'PIETRO'
