@@ -325,6 +325,7 @@ def pacientes_escalas():
                 
                 # Visualizar os primeiros 5 registros
                 print(f'data_frame:\n{df.head()}')
+
                 print("DataFrame salvo com sucesso!")
 
     except Exception as erro:
@@ -346,20 +347,21 @@ if __name__ == "__main__":
         
         df['ATEND'] = df['ATEND'].apply(lambda x: "{:.0f}".format(x))
         
-        #df['LEITO'] = df['LEITO'].replace('.', '', regex=True)
+        # Convertendo a coluna 'MEWS' para inteiro
+        #df['MEWS'] = df['MEWS'].astype(int)
         
-        #df = df.replace('.', '', regex=True)
+        # Removendo a parte decimal utilizando o método str
+        df['MEWS'] = df['MEWS'].astype(str).str.replace('.0', '')
         
-        #print(f'df:\n{df[['LEITO','ATEND','PACIENTE']]}')
-        
+        print(f'data_frame:\n{df[['MEWS']]}')
+                
         with st.sidebar:
             #SETOR:
             #st.markdown("# JP - U.I. 3 ANDAR")
             #st.sidebar.markdown("# JP - U.I. 3 ANDAR")
             
             st.write('# Indicadores:')
-            
-            
+                        
             #print(f'total_leitos: {total_leitos}')
             #print(f'total_livres: {total_livres}')
             #st.write(f"Leitos: ")

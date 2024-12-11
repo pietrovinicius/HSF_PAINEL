@@ -21,4 +21,4 @@ if __name__ == "__main__":
     #st.sidebar.markdown("# HOME")
     st.image(logo_path,width=800)
     st.write('\n\n\n\n')
-    st.write('# Dashboard para a Enfermagem ')
+    st.write('# Dashboard - Enfermagem ')

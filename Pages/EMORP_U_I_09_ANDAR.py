@@ -346,6 +346,9 @@ if __name__ == "__main__":
         
         df['ATEND'] = df['ATEND'].apply(lambda x: "{:.0f}".format(x))
         
+        # Removendo a parte decimal utilizando o método str
+        df['MEWS'] = df['MEWS'].astype(str).str.replace('.0', '')
+        
         #df['LEITO'] = df['LEITO'].replace('.', '', regex=True)
         
         #df = df.replace('.', '', regex=True)
