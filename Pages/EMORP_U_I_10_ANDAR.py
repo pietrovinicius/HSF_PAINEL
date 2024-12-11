@@ -10,7 +10,7 @@ import locale
 import datetime
 
 #Configurando pagina para exibicao em modo WIDE:
-st.set_page_config(layout="wide",initial_sidebar_state="expanded")
+st.set_page_config(layout="wide",initial_sidebar_state="expanded",page_title="EMORP - U.I. 10º ANDAR")
 
 #SETOR:
 #JP - U.I. 3 ANDAR

@@ -10,7 +10,7 @@ import locale
 import datetime
 
 #Configurando pagina para exibicao em modo WIDE:
-st.set_page_config(layout="wide",initial_sidebar_state="expanded")
+st.set_page_config(layout="wide",initial_sidebar_state="expanded",page_title="JP - U.I. 3º ANDAR")
 
 #SETOR:
 #JP - U.I. 3 ANDAR
@@ -340,7 +340,7 @@ logo_path = 'HSF_LOGO_-_1228x949_001.png'
 if __name__ == "__main__":
     try:
         st.logo(logo_path,size="large")
-
+        
         df = pacientes_escalas()
         #Substitui os espancos em branco por hifen:
         df = df = df.fillna('-')
@@ -357,8 +357,8 @@ if __name__ == "__main__":
                 
         with st.sidebar:
             #SETOR:
-            #st.markdown("# JP - U.I. 3 ANDAR")
-            #st.sidebar.markdown("# JP - U.I. 3 ANDAR")
+            #st.markdown("# JP - U.I. 3º ANDAR")
+            #st.sidebar.markdown("# JP - U.I. 3º ANDAR")
             
             st.write('# Indicadores:')
                         
@@ -410,7 +410,7 @@ if __name__ == "__main__":
             
             
         while True:
-            st.write("# JP - U.I. 3 ANDAR")
+            st.write("# JP - U.I. 3º ANDAR")
             
             #Exibindo data frame:
             st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
