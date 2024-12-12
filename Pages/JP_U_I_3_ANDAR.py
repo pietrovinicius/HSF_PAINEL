@@ -421,7 +421,11 @@ if __name__ == "__main__":
             
         while True:
             st.write("# JP - U.I. 3º ANDAR")
-            
+            st.write('\n\n\n')
+            st.write('\n\n\n')
+            st.write(f'Atualizado: {datetime.datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}')
+            st.write('\n\n\n')
+            st.write('\n\n\n')
             #Exibindo data frame:
             st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
             
