@@ -35,7 +35,7 @@ def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-window
     print(f"A pasta '{nome_pasta}' nao foi encontrada na raiz do aplicativo.")
     return None
 
-#@st.cache_data 
+@st.cache_data 
 def pacientes_escalas():
     try:
         un = 'PIETRO'
@@ -326,6 +326,7 @@ def pacientes_escalas():
                 # Visualizar os primeiros 5 registros
                 print(f'data_frame:\n{df.head()}')
                 print("DataFrame salvo com sucesso!")
+                print("EMORP - U.I. 10º ANDAR")
 
     except Exception as erro:
         print(f"Erro Inexperado:\n{erro}")
@@ -430,9 +431,9 @@ if __name__ == "__main__":
             st.write('\n\n\n')
             st.write('___________________')
                         
-            print(f'Pausar por 90 segundos!')
+            print(f'Pausar por 350 segundos!')
             print(f'{agora()}\n')
-            time.sleep(90)  # Pausar por 90 segundos            
+            time.sleep(350)  # Pausar por 350 segundos            
             print(f'\nst.experimental_rerun()\n')
             st.rerun()
         
