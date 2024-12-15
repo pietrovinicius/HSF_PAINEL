@@ -38,7 +38,7 @@ def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-window
     print(f"A pasta '{nome_pasta}' nao foi encontrada na raiz do aplicativo.")
     return None
 
-@st.cache_data 
+#@st.cache_data 
 def pacientes_escalas():
     try:
         un = 'PIETRO'
@@ -343,103 +343,107 @@ logo_path = 'HSF_LOGO_-_1228x949_001.png'
 
 if __name__ == "__main__":
     try:
-        st.logo(logo_path,size="large")
-        
-        df = pacientes_escalas()
-        #Substitui os espancos em branco por hifen:
-        df = df = df.fillna('-')
-        
-        df['ATEND'] = df['ATEND'].apply(lambda x: "{:.0f}".format(x))
-        
-        # Convertendo a coluna 'MEWS' para inteiro
-        #df['MEWS'] = df['MEWS'].astype(int)
-        
-        # Removendo a parte decimal utilizando o método str
-        df['MEWS'] = df['MEWS'].astype(str).str.replace('.0', '')
-        
-        #print(f'data_frame:\n{df[['MEWS']]}')
-        
-        # Criando um estilo personalizado para o DataFrame
-        st.markdown("""
-        <style>
-        .dataframe(display: block; width: 100% !important;)
-        </style>
-        """, unsafe_allow_html=True)
-                
-        with st.sidebar:
-            #SETOR:
-            #st.markdown("# JP - U.I. 3º ANDAR")
-            #st.sidebar.markdown("# JP - U.I. 3º ANDAR")
-            
-            st.write('# Indicadores:')
-                        
-            #print(f'total_leitos: {total_leitos}')
-            #print(f'total_livres: {total_livres}')
-            #st.write(f"Leitos: ")
-            
-            #BRADEN
-            BRADEN = df[['BRADEN']].shape[0]
-            BRADEN = df[df['BRADEN'] != '-']
-            BRADEN = len(BRADEN)
-            print(f'BRADEN: {BRADEN}')
-            st.write(f'Braden: {BRADEN}')
-            
-            #FUGULIN
-            FUGULIN = df[['FUGULIN']].shape[0]
-            FUGULIN = df[df['FUGULIN'] != '-']
-            FUGULIN = len(FUGULIN)
-            print(f'FUGULIN: {FUGULIN}')
-            st.write(f'Fugulin: {FUGULIN}')
-            
-            #GLASGOW
-            GLASGOW = df[['GLASGOW']].shape[0]
-            GLASGOW = df[df['GLASGOW'] != '-']
-            GLASGOW = len(GLASGOW)
-            print(f'GLASGOW: {GLASGOW}')
-            st.write(f'Glasgow: {GLASGOW}')
-        
-            #MEWS
-            MEWS = df[['MEWS']].shape[0]
-            MEWS = df[df['MEWS'] != '-']
-            MEWS = len(MEWS)
-            print(f'MEWS: {MEWS}')
-            st.write(f'Mews: {MEWS}')
-            
-            #MORSE
-            MORSE = df[['MORSE']].shape[0]
-            MORSE = df[df['MORSE'] != '-']
-            MORSE = len(MORSE)
-            print(f'MORSE: {MORSE}')
-            st.write(f'Morse: {MORSE}')
-            
-            #PRECAUCAO
-            PRECAUCAO = df[['PRECAUCAO']].shape[0]
-            PRECAUCAO = df[df['PRECAUCAO'] != '-']
-            PRECAUCAO = len(PRECAUCAO)
-            print(f'PRECAUCAO: {PRECAUCAO}')
-            st.write(f'Precaução: {PRECAUCAO}')
-            
-            
         while True:
+            print(f'========== if __name__ == "__main__" ==========')
+            st.logo(logo_path,size="large")
+
+            df = pacientes_escalas()
+            #Substitui os espancos em branco por hifen:
+            df = df = df.fillna('-')
+
+            df['ATEND'] = df['ATEND'].apply(lambda x: "{:.0f}".format(x))
+
+            # Convertendo a coluna 'MEWS' para inteiro
+            #df['MEWS'] = df['MEWS'].astype(int)
+
+            # Removendo a parte decimal utilizando o método str
+            df['MEWS'] = df['MEWS'].astype(str).str.replace('.0', '')
+
+            #print(f'data_frame:\n{df[['MEWS']]}')
+
+            # Criando um estilo personalizado para o DataFrame
+            st.markdown("""
+            <style>
+            .dataframe(display: block; width: 100% !important;)
+            </style>
+            """, unsafe_allow_html=True)
+            
             st.write("# JP - U.I. 3º ANDAR")
             st.write('\n\n\n')
             st.write('\n\n\n')
             st.write(f'Atualizado: {datetime.datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}')
             st.write('\n\n\n')
             st.write('\n\n\n')
+            
             #Exibindo data frame:
             st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
             
             #Total de Pacientes:
             print(f'Total de: {str(df.shape[0])} pacientes')
             st.write('### Ocupação: ' + str(df.shape[0]) + ' pacientes')
-            
             st.write('\n\n\n')
             st.write('\n\n\n')
             st.write('\n\n\n')
             st.write('\n\n\n')
             st.write('___________________')
-                        
+
+            with st.sidebar:
+                #SETOR:
+                #st.markdown("# JP - U.I. 3º ANDAR")
+                #st.sidebar.markdown("# JP - U.I. 3º ANDAR")
+
+                st.write('# Indicadores:')
+
+                #print(f'total_leitos: {total_leitos}')
+                #print(f'total_livres: {total_livres}')
+                #st.write(f"Leitos: ")
+
+                #BRADEN
+                BRADEN = df[['BRADEN']].shape[0]
+                BRADEN = df[df['BRADEN'] != '-']
+                BRADEN = len(BRADEN)
+                print(f'BRADEN: {BRADEN}')
+                st.write(f'Braden: {BRADEN}')
+
+                #FUGULIN
+                FUGULIN = df[['FUGULIN']].shape[0]
+                FUGULIN = df[df['FUGULIN'] != '-']
+                FUGULIN = len(FUGULIN)
+                print(f'FUGULIN: {FUGULIN}')
+                st.write(f'Fugulin: {FUGULIN}')
+
+                #GLASGOW
+                GLASGOW = df[['GLASGOW']].shape[0]
+                GLASGOW = df[df['GLASGOW'] != '-']
+                GLASGOW = len(GLASGOW)
+                print(f'GLASGOW: {GLASGOW}')
+                st.write(f'Glasgow: {GLASGOW}')
+
+                #MEWS
+                MEWS = df[['MEWS']].shape[0]
+                MEWS = df[df['MEWS'] != '-']
+                MEWS = len(MEWS)
+                print(f'MEWS: {MEWS}')
+                st.write(f'Mews: {MEWS}')
+
+                #MORSE
+                MORSE = df[['MORSE']].shape[0]
+                MORSE = df[df['MORSE'] != '-']
+                MORSE = len(MORSE)
+                print(f'MORSE: {MORSE}')
+                st.write(f'Morse: {MORSE}')
+
+                #PRECAUCAO
+                PRECAUCAO = df[['PRECAUCAO']].shape[0]
+                PRECAUCAO = df[df['PRECAUCAO'] != '-']
+                PRECAUCAO = len(PRECAUCAO)
+                print(f'PRECAUCAO: {PRECAUCAO}')
+                st.write(f'Precaução: {PRECAUCAO}')
+
+
+            
+                
+
             print(f'Pausar por 350 segundos!')
             print(f'{agora()}\n')
             time.sleep(350)  # Pausar por 350 segundos            
@@ -447,4 +451,4 @@ if __name__ == "__main__":
             st.rerun()
         
     except Exception as err: 
-        print(f"Inexperado {err=}, {type(err)=}") 
+        print(f"Inexperado {err=}, {type(err)=}")
