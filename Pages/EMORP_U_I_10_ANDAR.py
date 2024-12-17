@@ -425,7 +425,7 @@ if __name__ == "__main__":
             print(f'Pausar por 600 segundos!')
             print(f'{agora()}\n')
             time.sleep(600)  # Pausar por 600 segundos            
-            print(f'\nst.experimental_rerun()\n')
+            print(f'EMORP - U.I. 10º ANDAR - st.experimental_rerun()\n')
             st.rerun()
         
     except Exception as err: 
