@@ -9,29 +9,16 @@ import plotly.graph_objects as go
 import locale
 import datetime
 
-#Configurando pagina para exibicao em modo WIDE:
-st.set_page_config(layout="wide",initial_sidebar_state="expanded",page_title="JP - U.I. 3º ANDAR")
-
-
-
-
-#SETOR:
-#JP - U.I. 3 ANDAR
+st.set_page_config(layout="wide",initial_sidebar_state="collapsed",page_title="EMORP - U.I. 15º ANDAR")
 
 def agora():
     agora = datetime.datetime.now()
     agora = agora.strftime("%Y-%m-%d %H-%M-%S")
     return str(agora)
 
-#apontamento para usar o Think Mod
 def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-windows.x64-23.6.0.24.10\\instantclient_23_6"):
-  # Obtém o diretório do script atual
   diretorio_atual = os.path.dirname(os.path.abspath(__file__))
-
-  # Constrói o caminho completo para a pasta do Instant Client
   caminho_instantclient = os.path.join(diretorio_atual, nome_pasta)
-
-  # Verifica se a pasta existe
   if os.path.exists(caminho_instantclient):
     return caminho_instantclient
   else:
@@ -41,31 +28,15 @@ def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-window
 #@st.cache_data 
 def pacientes_escalas():
     try:
-        un = 'PIETRO'
-        cs = '192.168.5.9:1521/TASYPRD'
-
-        # Chamar a função para obter o caminho do Instant Client
         caminho_instantclient = encontrar_diretorio_instantclient()
-
-        # Usar o caminho encontrado para inicializar o Oracle Client
         if caminho_instantclient:
-            print(f'if caminho_instantclient:\n')
-            print(f'oracledb.init_oracle_client(lib_dir=caminho_instantclient)\n')
             oracledb.init_oracle_client(lib_dir=caminho_instantclient)
         else:
             print("Erro ao localizar o Instant Client. Verifique o nome da pasta e o caminho.")
-        
+
         connection = oracledb.connect( user="TASY", password="aloisk", dsn="192.168.5.9:1521/TASYPRD")
-        
         with connection:
-            print(f'with oracledb.connect(user=un, password=pw, dsn=cs) as connection\n')
-            
-            print(f'\nconnection.current_schema: {connection.current_schema}')
-            
             with connection.cursor() as cursor:
-                print(f'with connection.cursor() as cursor:\n')
-                
-                #####################################################################################
                 #QUERY:
                 sql = """ 
                 
@@ -289,7 +260,7 @@ def pacientes_escalas():
 
                         --=============================================== REGRAS DE NEGOCIO: --===============================================
                         WHERE PH.dt_horario between SYSDATE - 1 and SYSDATE
-                        AND APV.CD_SETOR_ATENDIMENTO = 56
+                        AND APV.CD_SETOR_ATENDIMENTO = 54
                         AND APV.DT_ALTA IS NULL
                         GROUP BY 
                             APV.CD_SETOR_ATENDIMENTO,
@@ -305,41 +276,27 @@ def pacientes_escalas():
                         
                             
                     """
-                #####################################################################################
-                
-                #Executando a query:
-                #print(f'cursor.execute(sql)\n{sql}')
                 cursor.execute(sql)
-                
-                # Imprimir os resultados da consulta para verificar
-                print(f'results = cursor.fetchall()\n')
                 results = cursor.fetchall()
-        
-                #Exibindo redultado no console:
-                #print(f'Exibindo redultado no console:\n')    
-                #for r in cursor.execute(sql):
-                #    print(r)
-                
-                #Inserindo resultado em um data frame:
-                #df = pd.DataFrame(cursor.fetchall(), columns=[desc[0] for desc in cursor.description])
-                
-                print(f'df = pd.DataFrame(results, columns=[desc[0] for desc in cursor.description])')
                 df = pd.DataFrame(results, columns=[desc[0] for desc in cursor.description])
-                
                 # Visualizar os primeiros 5 registros
-                print(f'data_frame:\n{df.head()}')
-
+                print(f'data_frame:\n{df.head(5)}')
                 print("DataFrame salvo com sucesso!")
-                print("JP - U.I. 3º ANDAR")
-
+                print("EMORP - U.I. 15º ANDAR")
     except Exception as erro:
         print(f"Erro Inexperado:\n{erro}")
     
     return df   
 
-# Caminho da sua imagem (ajuste conforme a sua estrutura de pastas)
-logo_path = 'HSF_LOGO_-_1228x949_001.png'
+def cor_status(val):
+    if val == 'Pendente':
+        return 'background-color: yellow; color: black ; font-weight: bold' # Amarelo com texto preto para melhor contraste
+    elif val == 'Em análise':
+        return 'background-color: lightblue; color: black ; font-weight: bold' # Verde claro com texto preto
+    else:
+        return ''  
 
+logo_path = 'HSF_LOGO_-_1228x949_001.png'
 
 if __name__ == "__main__":
     try:
@@ -348,105 +305,74 @@ if __name__ == "__main__":
             st.logo(logo_path,size="large")
 
             df = pacientes_escalas()
-            #Substitui os espancos em branco por hifen:
             df = df = df.fillna('-')
-
             df['ATEND'] = df['ATEND'].apply(lambda x: "{:.0f}".format(x))
-
-            # Convertendo a coluna 'MEWS' para inteiro
-            #df['MEWS'] = df['MEWS'].astype(int)
-
-            # Removendo a parte decimal utilizando o método str
             df['MEWS'] = df['MEWS'].astype(str).str.replace('.0', '')
 
-            #print(f'data_frame:\n{df[['MEWS']]}')
-
-            # Criando um estilo personalizado para o DataFrame
-            st.markdown("""
-            <style>
-            .dataframe(display: block; width: 100% !important;)
-            </style>
-            """, unsafe_allow_html=True)
+            # CSS para maximizar a largura da tabela
+            st.markdown(
+                """
+                <style>
+                .dataframe {
+                    width: 100% !important;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True,
+            )
             
-            st.write("# JP - U.I. 3º ANDAR")
-            st.write('\n\n\n')
-            st.write('\n\n\n')
+            # Aplica o estilo condicional à coluna 'GPT_STATUS'
+            df_styled = df.style.applymap(cor_status, subset=['GPT_STATUS'])
+            
+            st.write("# EMORP - U.I. 15º ANDAR")
             st.write(f'Atualizado: {datetime.datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}')
-            st.write('\n\n\n')
-            st.write('\n\n\n')
             
             #Exibindo data frame:
-            st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
+            #st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
+            st.dataframe(df_styled,hide_index=True, use_container_width=True)
             
-            #Total de Pacientes:
+
             print(f'Total de: {str(df.shape[0])} pacientes')
             st.write('### Ocupação: ' + str(df.shape[0]) + ' pacientes')
-            st.write('\n\n\n')
-            st.write('\n\n\n')
-            st.write('\n\n\n')
             st.write('\n\n\n')
             st.write('___________________')
 
             with st.sidebar:
-                #SETOR:
-                #st.markdown("# JP - U.I. 3º ANDAR")
-                #st.sidebar.markdown("# JP - U.I. 3º ANDAR")
-
                 st.write('# Indicadores:')
-
-                #print(f'total_leitos: {total_leitos}')
-                #print(f'total_livres: {total_livres}')
-                #st.write(f"Leitos: ")
-
-                #BRADEN
                 BRADEN = df[['BRADEN']].shape[0]
                 BRADEN = df[df['BRADEN'] != '-']
                 BRADEN = len(BRADEN)
                 print(f'BRADEN: {BRADEN}')
                 st.write(f'Braden: {BRADEN}')
-
-                #FUGULIN
                 FUGULIN = df[['FUGULIN']].shape[0]
                 FUGULIN = df[df['FUGULIN'] != '-']
                 FUGULIN = len(FUGULIN)
                 print(f'FUGULIN: {FUGULIN}')
                 st.write(f'Fugulin: {FUGULIN}')
-
-                #GLASGOW
                 GLASGOW = df[['GLASGOW']].shape[0]
                 GLASGOW = df[df['GLASGOW'] != '-']
                 GLASGOW = len(GLASGOW)
                 print(f'GLASGOW: {GLASGOW}')
                 st.write(f'Glasgow: {GLASGOW}')
-
-                #MEWS
                 MEWS = df[['MEWS']].shape[0]
                 MEWS = df[df['MEWS'] != '-']
                 MEWS = len(MEWS)
                 print(f'MEWS: {MEWS}')
                 st.write(f'Mews: {MEWS}')
-
-                #MORSE
                 MORSE = df[['MORSE']].shape[0]
                 MORSE = df[df['MORSE'] != '-']
                 MORSE = len(MORSE)
                 print(f'MORSE: {MORSE}')
                 st.write(f'Morse: {MORSE}')
-
-                #PRECAUCAO
                 PRECAUCAO = df[['PRECAUCAO']].shape[0]
                 PRECAUCAO = df[df['PRECAUCAO'] != '-']
                 PRECAUCAO = len(PRECAUCAO)
                 print(f'PRECAUCAO: {PRECAUCAO}')
                 st.write(f'Precaução: {PRECAUCAO}')
 
-
-            
-                
-
-            print(f'Pausar por 350 segundos!')
+            print(f'Pausar por 600 segundos!')
             print(f'{agora()}\n')
-            time.sleep(350)  # Pausar por 350 segundos            
+            time.sleep(600)  # Pausar por 600 segundos            
             print(f'\nst.experimental_rerun()\n')
             st.rerun()
         

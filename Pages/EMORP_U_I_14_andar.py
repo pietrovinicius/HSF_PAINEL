@@ -6,64 +6,36 @@ import oracledb
 import pandas as pd
 import time
 import plotly.graph_objects as go
-import locale
 import datetime
 
-#Configurando pagina para exibicao em modo WIDE:
-st.set_page_config(layout="wide",initial_sidebar_state="expanded",page_title="EMORP - U.I. 14º ANDAR")
-
-#SETOR:
-#EMORP - U.I. 14º andar
-#CD_SETOR_ATEND (68)
+st.set_page_config(layout="wide",initial_sidebar_state="collapsed",page_title="EMORP - U.I. 14º ANDAR")
 
 def agora():
     agora = datetime.datetime.now()
     agora = agora.strftime("%Y-%m-%d %H-%M-%S")
     return str(agora)
 
-#apontamento para usar o Think Mod
 def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-windows.x64-23.6.0.24.10\\instantclient_23_6"):
-  # Obtém o diretório do script atual
   diretorio_atual = os.path.dirname(os.path.abspath(__file__))
-
-  # Constrói o caminho completo para a pasta do Instant Client
   caminho_instantclient = os.path.join(diretorio_atual, nome_pasta)
-
-  # Verifica se a pasta existe
   if os.path.exists(caminho_instantclient):
     return caminho_instantclient
   else:
     print(f"A pasta '{nome_pasta}' nao foi encontrada na raiz do aplicativo.")
     return None
 
-@st.cache_data 
+#@st.cache_data 
 def pacientes_escalas():
     try:
-        un = 'PIETRO'
-        cs = '192.168.5.9:1521/TASYPRD'
-
-        # Chamar a função para obter o caminho do Instant Client
         caminho_instantclient = encontrar_diretorio_instantclient()
-
-        # Usar o caminho encontrado para inicializar o Oracle Client
         if caminho_instantclient:
-            print(f'if caminho_instantclient:\n')
-            print(f'oracledb.init_oracle_client(lib_dir=caminho_instantclient)\n')
             oracledb.init_oracle_client(lib_dir=caminho_instantclient)
         else:
             print("Erro ao localizar o Instant Client. Verifique o nome da pasta e o caminho.")
-        
+
         connection = oracledb.connect( user="TASY", password="aloisk", dsn="192.168.5.9:1521/TASYPRD")
-        
         with connection:
-            print(f'with oracledb.connect(user=un, password=pw, dsn=cs) as connection\n')
-            
-            print(f'\nconnection.current_schema: {connection.current_schema}')
-            
             with connection.cursor() as cursor:
-                print(f'with connection.cursor() as cursor:\n')
-                
-                #####################################################################################
                 #QUERY:
                 sql = """ 
                 
@@ -303,124 +275,110 @@ def pacientes_escalas():
                         
                             
                     """
-                #####################################################################################
-                
-                #Executando a query:
-                #print(f'cursor.execute(sql)\n{sql}')
                 cursor.execute(sql)
-                
-                # Imprimir os resultados da consulta para verificar
-                print(f'results = cursor.fetchall()\n')
                 results = cursor.fetchall()
-        
-                #Exibindo redultado no console:
-                #print(f'Exibindo redultado no console:\n')    
-                #for r in cursor.execute(sql):
-                #    print(r)
-                
-                #Inserindo resultado em um data frame:
-                #df = pd.DataFrame(cursor.fetchall(), columns=[desc[0] for desc in cursor.description])
-                
-                print(f'df = pd.DataFrame(results, columns=[desc[0] for desc in cursor.description])')
                 df = pd.DataFrame(results, columns=[desc[0] for desc in cursor.description])
-                
                 # Visualizar os primeiros 5 registros
-                print(f'data_frame:\n{df.head()}')
-
+                print(f'data_frame:\n{df.head(5)}')
                 print("DataFrame salvo com sucesso!")
-                print("EMORP - U.I. 14º andar")
-
+                print("EMORP - U.I. 14º ANDAR")
     except Exception as erro:
         print(f"Erro Inexperado:\n{erro}")
     
     return df   
 
-# Caminho da sua imagem (ajuste conforme a sua estrutura de pastas)
-logo_path = 'HSF_LOGO_-_1228x949_001.png'
+def cor_status(val):
+    if val == 'Pendente':
+        return 'background-color: yellow; color: black ; font-weight: bold' # Amarelo com texto preto para melhor contraste
+    elif val == 'Em análise':
+        return 'background-color: lightblue; color: black ; font-weight: bold' # Verde claro com texto preto
+    else:
+        return ''   
 
+logo_path = 'HSF_LOGO_-_1228x949_001.png'
 
 if __name__ == "__main__":
     try:
-        st.logo(logo_path,size="large")
-        df = pacientes_escalas()
-        #Substitui os espancos em branco por hifen:
-        df = df = df.fillna('-')
-        # Removendo Ao zero no fim
-        df['ATEND'] = df['ATEND'].apply(lambda x: "{:.0f}".format(x))
-        # Removendo a parte decimal utilizando o método str
-        df['MEWS'] = df['MEWS'].astype(str).str.replace('.0', '')
-                
-        with st.sidebar:
-            st.write('# Indicadores:')
-
-            #BRADEN
-            BRADEN = df[['BRADEN']].shape[0]
-            BRADEN = df[df['BRADEN'] != '-']
-            BRADEN = len(BRADEN)
-            print(f'BRADEN: {BRADEN}')
-            st.write(f'Braden: {BRADEN}')
-            
-            #FUGULIN
-            FUGULIN = df[['FUGULIN']].shape[0]
-            FUGULIN = df[df['FUGULIN'] != '-']
-            FUGULIN = len(FUGULIN)
-            print(f'FUGULIN: {FUGULIN}')
-            st.write(f'Fugulin: {FUGULIN}')
-            
-            #GLASGOW
-            GLASGOW = df[['GLASGOW']].shape[0]
-            GLASGOW = df[df['GLASGOW'] != '-']
-            GLASGOW = len(GLASGOW)
-            print(f'GLASGOW: {GLASGOW}')
-            st.write(f'Glasgow: {GLASGOW}')
-        
-            #MEWS
-            MEWS = df[['MEWS']].shape[0]
-            MEWS = df[df['MEWS'] != '-']
-            MEWS = len(MEWS)
-            print(f'MEWS: {MEWS}')
-            st.write(f'Mews: {MEWS}')
-            
-            #MORSE
-            MORSE = df[['MORSE']].shape[0]
-            MORSE = df[df['MORSE'] != '-']
-            MORSE = len(MORSE)
-            print(f'MORSE: {MORSE}')
-            st.write(f'Morse: {MORSE}')
-            
-            #PRECAUCAO
-            PRECAUCAO = df[['PRECAUCAO']].shape[0]
-            PRECAUCAO = df[df['PRECAUCAO'] != '-']
-            PRECAUCAO = len(PRECAUCAO)
-            print(f'PRECAUCAO: {PRECAUCAO}')
-            st.write(f'Precaução: {PRECAUCAO}')
-            
-            
         while True:
-            st.write("# EMORP - U.I. 14º andar")
-            st.write('\n\n\n')
-            st.write('\n\n\n')
-            st.write(f'Atualizado: {datetime.datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}')
-            st.write('\n\n\n')
-            st.write('\n\n\n')
-            #Exibindo data frame:
-            st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','GLASGOW','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
+            print(f'========== if __name__ == "__main__" ==========')
+            st.logo(logo_path,size="large")
+
+            df = pacientes_escalas()
+            df = df = df.fillna('-')
+            df['ATEND'] = df['ATEND'].apply(lambda x: "{:.0f}".format(x))
+            df['MEWS'] = df['MEWS'].astype(str).str.replace('.0', '')
+
+            # CSS para maximizar a largura da tabela
+            st.markdown(
+                """
+                <style>
+                .dataframe {
+                    width: 100% !important;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True,
+            )
             
-            #Total de Pacientes:
+            # SELECIONA AS COLUNAS ANTES DE ESTILIZAR
+            colunas_selecionadas = ['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']
+            df_selecionado = df[colunas_selecionadas]
+    
+            # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO
+            df_styled = df_selecionado.style.applymap(cor_status, subset=['GPT_STATUS'])
+
+            
+            st.write("# EMORP - U.I. 14º ANDAR")
+            st.write(f'Atualizado: {datetime.datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}')
+            
+            #Exibindo data frame:
+            #st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
+            st.dataframe(df_styled,hide_index=True, height=550,use_container_width=True)
+            
+
             print(f'Total de: {str(df.shape[0])} pacientes')
             st.write('### Ocupação: ' + str(df.shape[0]) + ' pacientes')
-            
-            st.write('\n\n\n')
-            st.write('\n\n\n')
-            st.write('\n\n\n')
             st.write('\n\n\n')
             st.write('___________________')
-                        
-            print(f'Pausar por 350 segundos!')
+
+            with st.sidebar:
+                st.write('# Indicadores:')
+                BRADEN = df[['BRADEN']].shape[0]
+                BRADEN = df[df['BRADEN'] != '-']
+                BRADEN = len(BRADEN)
+                print(f'BRADEN: {BRADEN}')
+                st.write(f'Braden: {BRADEN}')
+                FUGULIN = df[['FUGULIN']].shape[0]
+                FUGULIN = df[df['FUGULIN'] != '-']
+                FUGULIN = len(FUGULIN)
+                print(f'FUGULIN: {FUGULIN}')
+                st.write(f'Fugulin: {FUGULIN}')
+                GLASGOW = df[['GLASGOW']].shape[0]
+                GLASGOW = df[df['GLASGOW'] != '-']
+                GLASGOW = len(GLASGOW)
+                print(f'GLASGOW: {GLASGOW}')
+                st.write(f'Glasgow: {GLASGOW}')
+                MEWS = df[['MEWS']].shape[0]
+                MEWS = df[df['MEWS'] != '-']
+                MEWS = len(MEWS)
+                print(f'MEWS: {MEWS}')
+                st.write(f'Mews: {MEWS}')
+                MORSE = df[['MORSE']].shape[0]
+                MORSE = df[df['MORSE'] != '-']
+                MORSE = len(MORSE)
+                print(f'MORSE: {MORSE}')
+                st.write(f'Morse: {MORSE}')
+                PRECAUCAO = df[['PRECAUCAO']].shape[0]
+                PRECAUCAO = df[df['PRECAUCAO'] != '-']
+                PRECAUCAO = len(PRECAUCAO)
+                print(f'PRECAUCAO: {PRECAUCAO}')
+                st.write(f'Precaução: {PRECAUCAO}')
+
+            print(f'Pausar por 600 segundos!')
             print(f'{agora()}\n')
-            time.sleep(350)  # Pausar por 350 segundos            
+            time.sleep(600)  # Pausar por 600 segundos            
             print(f'\nst.experimental_rerun()\n')
             st.rerun()
         
     except Exception as err: 
-        print(f"Inexperado {err=}, {type(err)=}") 
+        print(f"Inexperado {err=}, {type(err)=}")

@@ -3,12 +3,6 @@
 #HFS - PAINEL DE DIVERSOS DADOS E INDICADORES
 
 import streamlit as st
-import pandas as pd
-import numpy as np
-import os
-import oracledb
-import pandas as pd
-import plotly.express as px
 
 #Configurando pagina para exibicao em modo WIDE:
 st.set_page_config(layout="wide",initial_sidebar_state="expanded")
