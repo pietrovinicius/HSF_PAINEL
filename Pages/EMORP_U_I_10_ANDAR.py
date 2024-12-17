@@ -324,8 +324,8 @@ def pacientes_escalas():
                 df = pd.DataFrame(results, columns=[desc[0] for desc in cursor.description])
                 
                 # Visualizar os primeiros 5 registros
-                print(f'data_frame:\n{df.head()}')
-
+                print("# EMORP - U.I. 10º ANDAR")
+                print(f'data_frame:\n{df.head(5)}')
                 print("DataFrame salvo com sucesso!")
                 print("EMORP - U.I. 10º ANDAR")
 
@@ -381,7 +381,7 @@ if __name__ == "__main__":
             
             #Exibindo data frame:
             #st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
-            st.dataframe(df_styled,hide_index=True, height=550,use_container_width=True)
+            st.dataframe(df_styled,hide_index=True, height=580,use_container_width=True)
             
 
             print(f'Total de: {str(df.shape[0])} pacientes')
