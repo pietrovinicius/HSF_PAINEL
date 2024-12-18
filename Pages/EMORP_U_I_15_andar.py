@@ -1,3 +1,6 @@
+#AND APV.CD_SETOR_ATENDIMENTO = 54
+# EMORP - U.I. 15º ANDAR
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -9,16 +12,26 @@ import plotly.graph_objects as go
 import locale
 import datetime
 
+#Configurando pagina para exibicao em modo WIDE:
 st.set_page_config(layout="wide",initial_sidebar_state="collapsed",page_title="EMORP - U.I. 15º ANDAR")
+
+#SETOR:
+#JP - U.I. 3 ANDAR
 
 def agora():
     agora = datetime.datetime.now()
     agora = agora.strftime("%Y-%m-%d %H-%M-%S")
     return str(agora)
 
+#apontamento para usar o Think Mod
 def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-windows.x64-23.6.0.24.10\\instantclient_23_6"):
+  # Obtém o diretório do script atual
   diretorio_atual = os.path.dirname(os.path.abspath(__file__))
+
+  # Constrói o caminho completo para a pasta do Instant Client
   caminho_instantclient = os.path.join(diretorio_atual, nome_pasta)
+
+  # Verifica se a pasta existe
   if os.path.exists(caminho_instantclient):
     return caminho_instantclient
   else:
@@ -28,19 +41,39 @@ def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-window
 #@st.cache_data 
 def pacientes_escalas():
     try:
+        un = 'PIETRO'
+        cs = '192.168.5.9:1521/TASYPRD'
+
+        # Chamar a função para obter o caminho do Instant Client
         caminho_instantclient = encontrar_diretorio_instantclient()
+
+        # Usar o caminho encontrado para inicializar o Oracle Client
         if caminho_instantclient:
+            print(f'if caminho_instantclient:\n')
+            print(f'oracledb.init_oracle_client(lib_dir=caminho_instantclient)\n')
             oracledb.init_oracle_client(lib_dir=caminho_instantclient)
         else:
             print("Erro ao localizar o Instant Client. Verifique o nome da pasta e o caminho.")
-
+        
         connection = oracledb.connect( user="TASY", password="aloisk", dsn="192.168.5.9:1521/TASYPRD")
+        
         with connection:
+            print(f'with oracledb.connect(user=un, password=pw, dsn=cs) as connection\n')
+            
+            print(f'\nconnection.current_schema: {connection.current_schema}')
+            
             with connection.cursor() as cursor:
+                print(f'with connection.cursor() as cursor:\n')
+                
+                #####################################################################################
                 #QUERY:
                 sql = """ 
-                
                         SELECT
+                            CASE 
+                                WHEN  PA.IE_CLASSIFICACAO IS NOT NULL 
+                                THEN 'SIM'
+                                ELSE 'NÃO'
+                            END ALERGIA,
                             APV.CD_SETOR_ATENDIMENTO AS SETOR_ATENDIMENTO,
                             OBTER_DESC_SETOR_ATEND(APV.CD_SETOR_ATENDIMENTO) AS SETOR,
                             REPLACE(OBTER_LEITO_ATUAL_PAC(APV.NR_ATENDIMENTO),'-',' ') AS LEITO,
@@ -257,6 +290,7 @@ def pacientes_escalas():
                         FROM ATENDIMENTO_PACIENTE_V APV
                         LEFT JOIN prescr_medica PM ON (  PM.NR_ATENDIMENTO = APV.NR_ATENDIMENTO )
                         LEFT JOIN prescr_mat_hor PH ON ( PH.NR_PRESCRICAO = PM.NR_PRESCRICAO)
+                        LEFT JOIN PACIENTE_ALERGIA PA ON ( APV.NR_ATENDIMENTO = PA.NR_ATENDIMENTO)
 
                         --=============================================== REGRAS DE NEGOCIO: --===============================================
                         WHERE PH.dt_horario between SYSDATE - 1 and SYSDATE
@@ -268,7 +302,8 @@ def pacientes_escalas():
                             APV.NR_ATENDIMENTO,
                             APV.IE_STATUS_ATENDIMENTO,
                             APV.cd_medico_resp,
-                            APV.DT_ENTRADA
+                            APV.DT_ENTRADA,
+                            PA.IE_CLASSIFICACAO
                         ORDER BY 
                             OBTER_DESC_SETOR_ATEND(APV.CD_SETOR_ATENDIMENTO),
                             OBTER_LEITO_ATUAL_PAC(APV.NR_ATENDIMENTO),
@@ -276,13 +311,33 @@ def pacientes_escalas():
                         
                             
                     """
+                #####################################################################################
+                
+                #Executando a query:
+                #print(f'cursor.execute(sql)\n{sql}')
                 cursor.execute(sql)
+                
+                # Imprimir os resultados da consulta para verificar
+                print(f'results = cursor.fetchall()\n')
                 results = cursor.fetchall()
+        
+                #Exibindo redultado no console:
+                #print(f'Exibindo redultado no console:\n')    
+                #for r in cursor.execute(sql):
+                #    print(r)
+                
+                #Inserindo resultado em um data frame:
+                #df = pd.DataFrame(cursor.fetchall(), columns=[desc[0] for desc in cursor.description])
+                
+                print(f'df = pd.DataFrame(results, columns=[desc[0] for desc in cursor.description])')
                 df = pd.DataFrame(results, columns=[desc[0] for desc in cursor.description])
+                
                 # Visualizar os primeiros 5 registros
-                print(f'data_frame:\n{df.head(5)}')
+                print(f'data_frame:\n{df.head()}')
+
                 print("DataFrame salvo com sucesso!")
                 print("EMORP - U.I. 15º ANDAR")
+
     except Exception as erro:
         print(f"Erro Inexperado:\n{erro}")
     
@@ -293,8 +348,10 @@ def cor_status(val):
         return 'background-color: yellow; color: black ; font-weight: bold' # Amarelo com texto preto para melhor contraste
     elif val == 'Em análise':
         return 'background-color: lightblue; color: black ; font-weight: bold' # Verde claro com texto preto
+    elif val == 'SIM':
+        return 'background-color: sandybrown; color: black ; font-weight: bold' # Amarelo com texto preto para melhor contraste
     else:
-        return ''  
+        return ''   
 
 logo_path = 'HSF_LOGO_-_1228x949_001.png'
 
@@ -321,15 +378,23 @@ if __name__ == "__main__":
                 unsafe_allow_html=True,
             )
             
-            # Aplica o estilo condicional à coluna 'GPT_STATUS'
-            df_styled = df.style.applymap(cor_status, subset=['GPT_STATUS'])
+            # SELECIONA AS COLUNAS ANTES DE ESTILIZAR
+            colunas_selecionadas = ['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE', 'ALERGIA' , 'GPT_STATUS']
+            df_selecionado = df[colunas_selecionadas]
+    
+            # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO
+            #df_styled = df_selecionado.style.applymap(cor_status, subset=['GPT_STATUS'])
+            
+            # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO
+            df_styled = df_selecionado.style.applymap(cor_status, subset=['GPT_STATUS']).applymap(cor_status, subset=['ALERGIA'])
+
             
             st.write("# EMORP - U.I. 15º ANDAR")
             st.write(f'Atualizado: {datetime.datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}')
             
             #Exibindo data frame:
             #st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
-            st.dataframe(df_styled,hide_index=True, use_container_width=True)
+            st.dataframe(df_styled,hide_index=True, height=620,use_container_width=True)
             
 
             print(f'Total de: {str(df.shape[0])} pacientes')

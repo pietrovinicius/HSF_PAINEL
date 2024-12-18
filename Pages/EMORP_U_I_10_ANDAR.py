@@ -1,3 +1,6 @@
+#AND APV.CD_SETOR_ATENDIMENTO = 71
+# EMORP - U.I. 10º ANDAR
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -65,8 +68,12 @@ def pacientes_escalas():
                 #####################################################################################
                 #QUERY:
                 sql = """ 
-                
                         SELECT
+                            CASE 
+                                WHEN  PA.IE_CLASSIFICACAO IS NOT NULL 
+                                THEN 'SIM'
+                                ELSE 'NÃO'
+                            END ALERGIA,
                             APV.CD_SETOR_ATENDIMENTO AS SETOR_ATENDIMENTO,
                             OBTER_DESC_SETOR_ATEND(APV.CD_SETOR_ATENDIMENTO) AS SETOR,
                             REPLACE(OBTER_LEITO_ATUAL_PAC(APV.NR_ATENDIMENTO),'-',' ') AS LEITO,
@@ -283,6 +290,7 @@ def pacientes_escalas():
                         FROM ATENDIMENTO_PACIENTE_V APV
                         LEFT JOIN prescr_medica PM ON (  PM.NR_ATENDIMENTO = APV.NR_ATENDIMENTO )
                         LEFT JOIN prescr_mat_hor PH ON ( PH.NR_PRESCRICAO = PM.NR_PRESCRICAO)
+                        LEFT JOIN PACIENTE_ALERGIA PA ON ( APV.NR_ATENDIMENTO = PA.NR_ATENDIMENTO)
 
                         --=============================================== REGRAS DE NEGOCIO: --===============================================
                         WHERE PH.dt_horario between SYSDATE - 1 and SYSDATE
@@ -294,7 +302,8 @@ def pacientes_escalas():
                             APV.NR_ATENDIMENTO,
                             APV.IE_STATUS_ATENDIMENTO,
                             APV.cd_medico_resp,
-                            APV.DT_ENTRADA
+                            APV.DT_ENTRADA,
+                            PA.IE_CLASSIFICACAO
                         ORDER BY 
                             OBTER_DESC_SETOR_ATEND(APV.CD_SETOR_ATENDIMENTO),
                             OBTER_LEITO_ATUAL_PAC(APV.NR_ATENDIMENTO),
@@ -339,10 +348,11 @@ def cor_status(val):
         return 'background-color: yellow; color: black ; font-weight: bold' # Amarelo com texto preto para melhor contraste
     elif val == 'Em análise':
         return 'background-color: lightblue; color: black ; font-weight: bold' # Verde claro com texto preto
+    elif val == 'SIM':
+        return 'background-color: sandybrown; color: black ; font-weight: bold' # Amarelo com texto preto para melhor contraste
     else:
-        return ''  
-    
-# Caminho da sua imagem (ajuste conforme a sua estrutura de pastas)
+        return ''   
+
 logo_path = 'HSF_LOGO_-_1228x949_001.png'
 
 if __name__ == "__main__":
@@ -369,11 +379,14 @@ if __name__ == "__main__":
             )
             
             # SELECIONA AS COLUNAS ANTES DE ESTILIZAR
-            colunas_selecionadas = ['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']
+            colunas_selecionadas = ['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE', 'ALERGIA' , 'GPT_STATUS']
             df_selecionado = df[colunas_selecionadas]
     
             # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO
-            df_styled = df_selecionado.style.applymap(cor_status, subset=['GPT_STATUS'])
+            #df_styled = df_selecionado.style.applymap(cor_status, subset=['GPT_STATUS'])
+            
+            # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO
+            df_styled = df_selecionado.style.applymap(cor_status, subset=['GPT_STATUS']).applymap(cor_status, subset=['ALERGIA'])
 
             
             st.write("# EMORP - U.I. 10º ANDAR")
@@ -381,7 +394,7 @@ if __name__ == "__main__":
             
             #Exibindo data frame:
             #st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
-            st.dataframe(df_styled,hide_index=True, height=550,use_container_width=True)
+            st.dataframe(df_styled,hide_index=True, height=620,use_container_width=True)
             
 
             print(f'Total de: {str(df.shape[0])} pacientes')
