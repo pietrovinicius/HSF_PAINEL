@@ -73,7 +73,7 @@ def pacientes_escalas():
                             CASE 
                                 WHEN  PA.IE_CLASSIFICACAO IS NOT NULL 
                                 THEN 'SIM'
-                                ELSE 'NÃO'
+                                ELSE '-'
                             END ALERGIA,
                             APV.CD_SETOR_ATENDIMENTO AS SETOR_ATENDIMENTO,
                             OBTER_DESC_SETOR_ATEND(APV.CD_SETOR_ATENDIMENTO) AS SETOR,
