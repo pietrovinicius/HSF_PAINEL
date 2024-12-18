@@ -334,8 +334,8 @@ def pacientes_escalas():
                 df = pd.DataFrame(results, columns=[desc[0] for desc in cursor.description])
                 
                 # Visualizar os primeiros 5 registros
-                print(f'data_frame:\n{df.head()}')
-
+                print("# EMORP - U.I. 14º ANDAR")
+                print(f'data_frame:\n{df.head(5)}')
                 print("DataFrame salvo com sucesso!")
                 print("EMORP - U.I. 14º ANDAR")
 
@@ -395,7 +395,7 @@ if __name__ == "__main__":
             
             #Exibindo data frame:
             #st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
-            st.dataframe(df_styled,hide_index=True, height=620,use_container_width=True)
+            st.dataframe(df_styled,hide_index=True, height=580,use_container_width=True)
             
 
             print(f'Total de: {str(df.shape[0])} pacientes')
@@ -439,7 +439,7 @@ if __name__ == "__main__":
             print(f'Pausar por 600 segundos!')
             print(f'{agora()}\n')
             time.sleep(600)  # Pausar por 600 segundos            
-            print(f'\nst.experimental_rerun()\n')
+            print(f'EMORP - U.I. 14º ANDAR - st.experimental_rerun()\n')
             st.rerun()
         
     except Exception as err: 
