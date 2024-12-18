@@ -71,7 +71,7 @@ def pacientes_escalas():
                         SELECT
                             CASE 
                                 WHEN  PA.IE_CLASSIFICACAO IS NOT NULL 
-                                THEN 'SIM'
+                                THEN 'Sim'
                                 ELSE '-'
                             END ALERGIA,
                             APV.CD_SETOR_ATENDIMENTO AS SETOR_ATENDIMENTO,
@@ -348,7 +348,7 @@ def cor_status(val):
         return 'background-color: yellow; color: black ; font-weight: bold' # Amarelo com texto preto para melhor contraste
     elif val == 'Em análise':
         return 'background-color: lightblue; color: black ; font-weight: bold' # Verde claro com texto preto
-    elif val == 'SIM':
+    elif val == 'Sim':
         return 'background-color: sandybrown; color: black ; font-weight: bold' # Amarelo com texto preto para melhor contraste
     else:
         return ''   
