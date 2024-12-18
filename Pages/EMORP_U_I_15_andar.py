@@ -77,7 +77,7 @@ def pacientes_escalas():
                             APV.CD_SETOR_ATENDIMENTO AS SETOR_ATENDIMENTO,
                             OBTER_DESC_SETOR_ATEND(APV.CD_SETOR_ATENDIMENTO) AS SETOR,
                             REPLACE(OBTER_LEITO_ATUAL_PAC(APV.NR_ATENDIMENTO),'-',' ') AS LEITO,
-                            APV.NR_ATENDIMENTO AS ATEND,
+                            APV.NR_ATENDIMENTO AS ATENDIMENTO,
                             SUBSTR(obter_nome_pf(APV.CD_PESSOA_FISICA), 1, 1) || 
                             SUBSTR(ABREVIA_NOME(obter_nome_pf(APV.CD_PESSOA_FISICA), 'A'), 
                             INSTR(ABREVIA_NOME(obter_nome_pf(APV.CD_PESSOA_FISICA), 'A'), ' ')) AS PACIENTE,
@@ -363,7 +363,7 @@ if __name__ == "__main__":
 
             df = pacientes_escalas()
             df = df = df.fillna('-')
-            df['ATEND'] = df['ATEND'].apply(lambda x: "{:.0f}".format(x))
+            df['ATENDIMENTO'] = df['ATENDIMENTO'].apply(lambda x: "{:.0f}".format(x))
             df['MEWS'] = df['MEWS'].astype(str).str.replace('.0', '')
 
             # CSS para maximizar a largura da tabela
@@ -379,7 +379,7 @@ if __name__ == "__main__":
             )
             
             # SELECIONA AS COLUNAS ANTES DE ESTILIZAR
-            colunas_selecionadas = ['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE', 'ALERGIA' , 'GPT_STATUS']
+            colunas_selecionadas = ['LEITO', 'ATENDIMENTO','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE', 'ALERGIA' , 'GPT_STATUS']
             df_selecionado = df[colunas_selecionadas]
     
             # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO
@@ -393,8 +393,8 @@ if __name__ == "__main__":
             st.write(f'Atualizado: {datetime.datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}')
             
             #Exibindo data frame:
-            #st.dataframe(df[['LEITO', 'ATEND','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
-            st.dataframe(df_styled,hide_index=True,height=580, use_container_width=True)
+            #st.dataframe(df[['LEITO', 'ATENDIMENTO','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
+            st.dataframe(df_styled,hide_index=True, use_container_width=True)
             
 
             print(f'Total de: {str(df.shape[0])} pacientes')
