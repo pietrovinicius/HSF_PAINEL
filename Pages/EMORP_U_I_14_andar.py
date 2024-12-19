@@ -291,7 +291,7 @@ def pacientes_escalas():
                         FROM ATENDIMENTO_PACIENTE_V APV
                         LEFT JOIN prescr_medica PM ON (  PM.NR_ATENDIMENTO = APV.NR_ATENDIMENTO )
                         LEFT JOIN prescr_mat_hor PH ON ( PH.NR_PRESCRICAO = PM.NR_PRESCRICAO)
-                        LEFT JOIN PACIENTE_ALERGIA PA ON ( APV.NR_ATENDIMENTO = PA.NR_ATENDIMENTO)
+                        LEFT JOIN PACIENTE_ALERGIA PA ON ( APV.CD_PESSOA_FISICA = PA.CD_PESSOA_FISICA)
 
                         --=============================================== REGRAS DE NEGOCIO: --===============================================
                         WHERE PH.dt_horario between SYSDATE - 1 and SYSDATE
