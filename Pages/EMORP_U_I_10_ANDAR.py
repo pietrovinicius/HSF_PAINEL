@@ -49,8 +49,8 @@ def pacientes_escalas():
 
         # Usar o caminho encontrado para inicializar o Oracle Client
         if caminho_instantclient:
-            print(f'if caminho_instantclient:\n')
-            print(f'oracledb.init_oracle_client(lib_dir=caminho_instantclient)\n')
+            #print(f'if caminho_instantclient:\n')
+            #print(f'oracledb.init_oracle_client(lib_dir=caminho_instantclient)\n')
             oracledb.init_oracle_client(lib_dir=caminho_instantclient)
         else:
             print("Erro ao localizar o Instant Client. Verifique o nome da pasta e o caminho.")
@@ -58,12 +58,12 @@ def pacientes_escalas():
         connection = oracledb.connect( user="TASY", password="aloisk", dsn="192.168.5.9:1521/TASYPRD")
         
         with connection:
-            print(f'with oracledb.connect(user=un, password=pw, dsn=cs) as connection\n')
+            #print(f'with oracledb.connect(user=un, password=pw, dsn=cs) as connection\n')
             
-            print(f'\nconnection.current_schema: {connection.current_schema}')
+            #print(f'\nconnection.current_schema: {connection.current_schema}')
             
             with connection.cursor() as cursor:
-                print(f'with connection.cursor() as cursor:\n')
+                #print(f'with connection.cursor() as cursor:\n')
                 
                 #####################################################################################
                 #QUERY:
@@ -318,7 +318,7 @@ def pacientes_escalas():
                 cursor.execute(sql)
                 
                 # Imprimir os resultados da consulta para verificar
-                print(f'results = cursor.fetchall()\n')
+                #print(f'results = cursor.fetchall()\n')
                 results = cursor.fetchall()
         
                 #Exibindo redultado no console:
@@ -329,14 +329,14 @@ def pacientes_escalas():
                 #Inserindo resultado em um data frame:
                 #df = pd.DataFrame(cursor.fetchall(), columns=[desc[0] for desc in cursor.description])
                 
-                print(f'df = pd.DataFrame(results, columns=[desc[0] for desc in cursor.description])')
+                #print(f'df = pd.DataFrame(results, columns=[desc[0] for desc in cursor.description])')
                 df = pd.DataFrame(results, columns=[desc[0] for desc in cursor.description])
                 
                 # Visualizar os primeiros 5 registros
                 print("# EMORP - U.I. 10º ANDAR")
-                print(f'data_frame:\n{df.head(5)}')
-                print("DataFrame salvo com sucesso!")
-                print("EMORP - U.I. 10º ANDAR")
+                #print(f'data_frame:\n{df.head(5)}')
+                #print("DataFrame salvo com sucesso!")
+                #print("EMORP - U.I. 10º ANDAR")
 
     except Exception as erro:
         print(f"Erro Inexperado:\n{erro}")
@@ -386,7 +386,7 @@ if __name__ == "__main__":
             #df_styled = df_selecionado.style.applymap(cor_status, subset=['GPT_STATUS'])
             
             # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO
-            df_styled = df_selecionado.style.applymap(cor_status, subset=['GPT_STATUS']).applymap(cor_status, subset=['ALERGIA'])
+            df_styled = df_selecionado.style.map(cor_status, subset=['GPT_STATUS']).map(cor_status, subset=['ALERGIA'])
 
             
             st.write("# EMORP - U.I. 10º ANDAR")
@@ -407,32 +407,32 @@ if __name__ == "__main__":
                 BRADEN = df[['BRADEN']].shape[0]
                 BRADEN = df[df['BRADEN'] != '-']
                 BRADEN = len(BRADEN)
-                print(f'BRADEN: {BRADEN}')
+                #print(f'BRADEN: {BRADEN}')
                 st.write(f'Braden: {BRADEN}')
                 FUGULIN = df[['FUGULIN']].shape[0]
                 FUGULIN = df[df['FUGULIN'] != '-']
                 FUGULIN = len(FUGULIN)
-                print(f'FUGULIN: {FUGULIN}')
+                #print(f'FUGULIN: {FUGULIN}')
                 st.write(f'Fugulin: {FUGULIN}')
                 GLASGOW = df[['GLASGOW']].shape[0]
                 GLASGOW = df[df['GLASGOW'] != '-']
                 GLASGOW = len(GLASGOW)
-                print(f'GLASGOW: {GLASGOW}')
+                #print(f'GLASGOW: {GLASGOW}')
                 st.write(f'Glasgow: {GLASGOW}')
                 MEWS = df[['MEWS']].shape[0]
                 MEWS = df[df['MEWS'] != '-']
                 MEWS = len(MEWS)
-                print(f'MEWS: {MEWS}')
+                #print(f'MEWS: {MEWS}')
                 st.write(f'Mews: {MEWS}')
                 MORSE = df[['MORSE']].shape[0]
                 MORSE = df[df['MORSE'] != '-']
                 MORSE = len(MORSE)
-                print(f'MORSE: {MORSE}')
+                #print(f'MORSE: {MORSE}')
                 st.write(f'Morse: {MORSE}')
                 PRECAUCAO = df[['PRECAUCAO']].shape[0]
                 PRECAUCAO = df[df['PRECAUCAO'] != '-']
                 PRECAUCAO = len(PRECAUCAO)
-                print(f'PRECAUCAO: {PRECAUCAO}')
+                #print(f'PRECAUCAO: {PRECAUCAO}')
                 st.write(f'Precaução: {PRECAUCAO}')
 
             print(f'Pausar por 600 segundos!')

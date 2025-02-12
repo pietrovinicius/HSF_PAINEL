@@ -4,6 +4,9 @@
 
 import streamlit as st
 
+#Execucao:
+#streamlit run inicio.py --server.port 8003
+
 #Configurando pagina para exibicao em modo WIDE:
 st.set_page_config(layout="wide",initial_sidebar_state="expanded")
 
