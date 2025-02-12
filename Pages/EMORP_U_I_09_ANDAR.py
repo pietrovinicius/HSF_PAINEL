@@ -32,6 +32,15 @@ def calcular_altura_dataframe(num_linhas, altura_base=150, altura_por_linha=30, 
             altura = altura_base + (num_linhas * altura_por_linha)
             return min(altura, max_altura)
 
+def calcular_altura_dataframe(num_linhas, altura_base=150, altura_por_linha=30, max_altura=925):
+            """Calcula a altura apropriada para um DataFrame com base no número de linhas.
+                exemplo:
+                        #altura_df = calcular_altura_dataframe(df_aguard_ps.shape[0])
+                        #st.dataframe(df_aguard_ps, hide_index=True, use_container_width=True, height=altura_df)    
+            """
+            altura = altura_base + (num_linhas * altura_por_linha)
+            return min(altura, max_altura)
+
 #apontamento para usar o Think Mod
 def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-windows.x64-23.6.0.24.10\\instantclient_23_6"):
   # Obtém o diretório do script atual

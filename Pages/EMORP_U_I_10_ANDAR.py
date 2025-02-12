@@ -394,7 +394,7 @@ if __name__ == "__main__":
             
             #Exibindo data frame:
             #st.dataframe(df[['LEITO', 'ATENDIMENTO','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
-            st.dataframe(df_styled,hide_index=True, height=580,use_container_width=True)
+            st.dataframe(df_styled,hide_index=True, height=640,use_container_width=True)
             
 
             print(f'Total de: {str(df.shape[0])} pacientes')
