@@ -23,6 +23,15 @@ def agora():
     agora = agora.strftime("%Y-%m-%d %H-%M-%S")
     return str(agora)
 
+def calcular_altura_dataframe(num_linhas, altura_base=150, altura_por_linha=30, max_altura=925):
+            """Calcula a altura apropriada para um DataFrame com base no número de linhas.
+                exemplo:
+                        #altura_df = calcular_altura_dataframe(df_aguard_ps.shape[0])
+                        #st.dataframe(df_aguard_ps, hide_index=True, use_container_width=True, height=altura_df)    
+            """
+            altura = altura_base + (num_linhas * altura_por_linha)
+            return min(altura, max_altura)
+
 #apontamento para usar o Think Mod
 def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-windows.x64-23.6.0.24.10\\instantclient_23_6"):
   # Obtém o diretório do script atual
@@ -395,7 +404,10 @@ if __name__ == "__main__":
             
             #Exibindo data frame:
             #st.dataframe(df[['LEITO', 'ATENDIMENTO','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
-            st.dataframe(df_styled,hide_index=True, height=680,use_container_width=True)
+            
+            #TODO: ajustando data frame altura de acordo com o número de linhas dele:
+            altura_df = calcular_altura_dataframe(df.shape[0])
+            st.dataframe(df_styled,hide_index=True, height=altura_df,use_container_width=True)
             
 
             print(f'Total de: {str(df.shape[0])} pacientes')
