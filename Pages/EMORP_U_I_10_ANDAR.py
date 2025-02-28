@@ -358,7 +358,7 @@ logo_path = 'HSF_LOGO_-_1228x949_001.png'
 if __name__ == "__main__":
     try:
         while True:
-            print(f'========== if __name__ == "__main__" ==========')
+            print(f'\n{agora()} - EMORP - U.I. 10º ANDAR - if __name__ == "__main__" ')
             st.logo(logo_path,size="large")
 
             df = pacientes_escalas()
@@ -397,7 +397,7 @@ if __name__ == "__main__":
             st.dataframe(df_styled,hide_index=True, height=640,use_container_width=True)
             
 
-            print(f'Total de: {str(df.shape[0])} pacientes')
+            print(f'{agora()} - Total de: {str(df.shape[0])} pacientes')
             st.write('### Ocupação: ' + str(df.shape[0]) + ' pacientes')
             st.write('\n\n\n')
             st.write('___________________')
@@ -435,10 +435,10 @@ if __name__ == "__main__":
                 #print(f'PRECAUCAO: {PRECAUCAO}')
                 st.write(f'Precaução: {PRECAUCAO}')
 
-            print(f'Pausar por 600 segundos!')
-            print(f'{agora()}\n')
+            print(f'{agora()} - Pausar por 600 segundos!')
+            
             time.sleep(600)  # Pausar por 600 segundos            
-            print(f'EMORP - U.I. 10º ANDAR - st.experimental_rerun()\n')
+            print(f'{agora()} - EMORP - U.I. 10º ANDAR\nst.rerun()\n')
             st.rerun()
         
     except Exception as err: 
