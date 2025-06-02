@@ -351,7 +351,24 @@ def cor_status(val):
     elif val == 'Sim':
         return 'background-color: sandybrown; color: black ; font-weight: bold' # Amarelo com texto preto para melhor contraste
     else:
-        return ''   
+        return ''
+
+def cor_mews(val):
+    """Aplica cor de fundo à célula MEWS com base no seu valor."""
+    try:
+        v = float(val) # Tenta converter o valor para float
+        if v >= 6:
+            return 'background-color: red; color: white; font-weight: bold'
+        elif 4 <= v <= 5:
+            return 'background-color: orange; color: black; font-weight: bold'
+        elif 2 <= v <= 3:
+            return 'background-color: pink; color: black; font-weight: bold'
+        elif 0 <= v <= 1:
+            return 'background-color: lightgreen; color: black; font-weight: bold'
+        else:
+            return '' # Para valores fora dos ranges ou não numéricos que passaram na conversão
+    except ValueError:
+        return '' # Se o valor não puder ser convertido para float (ex: '-')
 
 logo_path = 'HSF_LOGO_-_1228x949_001.png'
 
@@ -386,7 +403,9 @@ if __name__ == "__main__":
             #df_styled = df_selecionado.style.applymap(cor_status, subset=['GPT_STATUS'])
             
             # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO
-            df_styled = df_selecionado.style.map(cor_status, subset=['GPT_STATUS']).map(cor_status, subset=['ALERGIA'])
+            df_styled = df_selecionado.style.map(cor_status, subset=['GPT_STATUS'])\
+                                           .map(cor_status, subset=['ALERGIA'])\
+                                           .map(cor_mews, subset=['MEWS'])
 
             
             st.write("# EMORP - U.I. 15º ANDAR")

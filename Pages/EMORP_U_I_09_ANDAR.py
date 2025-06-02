@@ -32,15 +32,6 @@ def calcular_altura_dataframe(num_linhas, altura_base=150, altura_por_linha=30, 
             altura = altura_base + (num_linhas * altura_por_linha)
             return min(altura, max_altura)
 
-def calcular_altura_dataframe(num_linhas, altura_base=150, altura_por_linha=30, max_altura=925):
-            """Calcula a altura apropriada para um DataFrame com base no número de linhas.
-                exemplo:
-                        #altura_df = calcular_altura_dataframe(df_aguard_ps.shape[0])
-                        #st.dataframe(df_aguard_ps, hide_index=True, use_container_width=True, height=altura_df)    
-            """
-            altura = altura_base + (num_linhas * altura_por_linha)
-            return min(altura, max_altura)
-
 #apontamento para usar o Think Mod
 def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-windows.x64-23.6.0.24.10\\instantclient_23_6"):
   # Obtém o diretório do script atual
@@ -368,7 +359,24 @@ def cor_status(val):
     elif val == 'Sim':
         return 'background-color: sandybrown; color: black ; font-weight: bold;' # Amarelo com texto preto para melhor contraste
     else:
-        return ''   
+        return ''
+
+def cor_mews(val):
+    """Aplica cor de fundo à célula MEWS com base no seu valor."""
+    try:
+        v = float(val) # Tenta converter o valor para float
+        if v >= 6:
+            return 'background-color: red; color: white; font-weight: bold'
+        elif 4 <= v <= 5:
+            return 'background-color: orange; color: black; font-weight: bold'
+        elif 2 <= v <= 3:
+            return 'background-color: pink; color: black; font-weight: bold'
+        elif 0 <= v <= 1:
+            return 'background-color: lightgreen; color: black; font-weight: bold'
+        else:
+            return '' # Para valores fora dos ranges ou não numéricos que passaram na conversão
+    except ValueError:
+        return '' # Se o valor não puder ser convertido para float (ex: '-')
 
 logo_path = 'HSF_LOGO_-_1228x949_001.png'
 
@@ -379,23 +387,23 @@ if __name__ == "__main__":
             st.logo(logo_path,size="large")
 
             df = pacientes_escalas()
-            df = df = df.fillna('-')
+            df = df.fillna('-') # Preenche NaNs com '-'
             df['ATENDIMENTO'] = df['ATENDIMENTO'].apply(lambda x: "{:.0f}".format(x))
             df['MEWS'] = df['MEWS'].astype(str).str.replace('.0', '')
 
-            # CSS para maximizar a largura da tabela
+            # CSS para maximizar a largura da tabela (como estava antes da tentativa com HTML)
             st.markdown(
                 """
                 <style>
                 .dataframe {
-                    width: 100%;
-                    text-align: center;
+                    width: 100% !important;
+                    /* text-align: center;  Removido pois não funcionou como esperado */
                 }
                 </style>
                 """,
                 unsafe_allow_html=True,
             )
-            
+
             # SELECIONA AS COLUNAS ANTES DE ESTILIZAR
             colunas_selecionadas = ['LEITO', 'ATENDIMENTO','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE', 'ALERGIA' , 'GPT_STATUS']
             df_selecionado = df[colunas_selecionadas]
@@ -403,20 +411,17 @@ if __name__ == "__main__":
             # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO
             #df_styled = df_selecionado.style.applymap(cor_status, subset=['GPT_STATUS'])
             
-            # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO
-            df_styled = df_selecionado.style.map(cor_status, subset=['GPT_STATUS']).map(cor_status, subset=['ALERGIA'])
+            # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO (Restaurado)
+            df_styled = df_selecionado.style.map(cor_status, subset=['GPT_STATUS'])\
+                                           .map(cor_status, subset=['ALERGIA'])\
+                                           .map(cor_mews, subset=['MEWS'])
 
-
-            
             st.write("# EMORP - U.I. 09º ANDAR")
             st.write(f'Atualizado: {datetime.datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}')
-            
-            #Exibindo data frame:
-            #st.dataframe(df[['LEITO', 'ATENDIMENTO','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS']],hide_index=True, use_container_width=True)
-            
+
             altura_df = calcular_altura_dataframe(df.shape[0])
+            # Exibindo data frame estilizado (Restaurado)
             st.dataframe(df_styled,hide_index=True, height=altura_df,use_container_width=True)
-            
 
             print(f'{agora()} - Total de: {str(df.shape[0])} pacientes')
             st.write('### Ocupação: ' + str(df.shape[0]) + ' pacientes')
