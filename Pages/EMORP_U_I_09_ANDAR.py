@@ -99,7 +99,7 @@ def pacientes_escalas():
                                 and A.dt_alta is null
                                 AND A.NR_ATENDIMENTO = APV.NR_ATENDIMENTO
                                 AND EM.IE_SITUACAO = 'A'
-                                order by em.DT_LIBERACAO desc
+                                order by em.DT_AVALIACAO desc
                                 FETCH FIRST 1 ROWS ONLY
                             )   AS MEWS,
 

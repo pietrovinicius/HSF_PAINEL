@@ -91,7 +91,7 @@ def pacientes_escalas():
                                 and A.dt_alta is null
                                 AND A.NR_ATENDIMENTO = APV.NR_ATENDIMENTO
                                 AND EM.IE_SITUACAO = 'A'
-                                order by em.DT_LIBERACAO desc
+                                order by em.DT_AVALIACAO desc
                                 FETCH FIRST 1 ROWS ONLY
                             )   AS MEWS,
 
@@ -102,7 +102,7 @@ def pacientes_escalas():
                                 from	atend_escala_braden AEB
                                 where  	(nr_atendimento	= APV.nr_atendimento)
                                 AND AEB.IE_SITUACAO = 'A'
-                                order by	1 desc
+                                order by	AEB.DT_LIBERACAO  desc
                                 FETCH FIRST 1 ROWS ONLY
                             ) AS BRADEN,
                             
@@ -114,7 +114,7 @@ def pacientes_escalas():
                                 from 	escala_morse EMM
                                 where EMM.NR_ATENDIMENTO = APV.NR_ATENDIMENTO
                                 AND EMM.IE_SITUACAO = 'A'
-                                order by	1 desc
+                                order by EMM.DT_LIBERACAO desc
                                 FETCH FIRST 1 ROWS ONLY
                             ) AS MORSE,
 
