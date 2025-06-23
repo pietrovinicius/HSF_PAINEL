@@ -25,13 +25,19 @@ import datetime
 #Configurando pagina para exibicao em modo WIDE:
 st.set_page_config(layout="wide",initial_sidebar_state="collapsed",page_title="H - Intensiva F ")
 
-#SETOR:
-
-
 def agora():
     agora = datetime.datetime.now()
     agora = agora.strftime("%Y-%m-%d %H-%M-%S")
     return str(agora)
+
+def calcular_altura_dataframe(num_linhas, altura_base=150, altura_por_linha=30, max_altura=925):
+            """Calcula a altura apropriada para um DataFrame com base no número de linhas.
+                exemplo:
+                        #altura_df = calcular_altura_dataframe(df_aguard_ps.shape[0])
+                        #st.dataframe(df_aguard_ps, hide_index=True, use_container_width=True, height=altura_df)    
+            """
+            altura = altura_base + (num_linhas * altura_por_linha)
+            return min(altura, max_altura)
 
 #apontamento para usar o Think Mod
 def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-windows.x64-23.6.0.24.10\\instantclient_23_6"):
@@ -144,8 +150,8 @@ def pacientes_escalas():
                             (
                                 SELECT
                                   CASE 
-                                    WHEN LENGTH(obter_valor_dominio(2088, IE_RASS)) > 56 THEN 
-                                      SUBSTR(obter_valor_dominio(2088, IE_RASS), 1, 56) || '...'
+                                    WHEN LENGTH(obter_valor_dominio(2088, IE_RASS)) > 21 THEN 
+                                      SUBSTR(obter_valor_dominio(2088, IE_RASS), 1, 21) || '...'
                                     ELSE 
                                       obter_valor_dominio(2088, IE_RASS)
                                   END AS DS_AGITACAO_SEDACAO
@@ -434,8 +440,7 @@ if __name__ == "__main__":
             st.write(f'Atualizado: {datetime.datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}')
             
             #Exibindo data frame:
-            #st.dataframe(df[['LEITO', 'ATENDIMENTO','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS', 'GLASGOW']],hide_index=True, use_container_width=True)
-            st.dataframe(df_styled,hide_index=True, height=520,use_container_width=True)
+            st.dataframe(df_styled,hide_index=True, height= calcular_altura_dataframe(df.shape[0]) ,use_container_width=True)
             
 
             print(f'{agora()} - Total de: {str(df.shape[0])} pacientes')
