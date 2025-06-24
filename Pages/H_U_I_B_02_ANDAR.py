@@ -425,8 +425,25 @@ if __name__ == "__main__":
             # SELECIONA AS COLUNAS ANTES DE ESTILIZAR
             #colunas_selecionadas = ['LEITO', 'ATENDIMENTO','PACIENTE','GLASGOW','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE', 'ALERGIA' , 'GPT_STATUS']
             colunas_selecionadas = ['LEITO', 'ATENDIMENTO','PACIENTE','GLASGOW','RASS','SAPSIII','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE', 'ALERGIA' , 'GPT_STATUS']
-            df_selecionado = df[colunas_selecionadas]
+            df_selecionado = df[colunas_selecionadas]    
     
+            # Define a configuração de largura para cada coluna para garantir consistência
+            column_config = {
+                "LEITO": st.column_config.TextColumn("LEITO", width="small"),
+                "ATENDIMENTO": st.column_config.TextColumn("ATEND", width="small"),
+                "PACIENTE": st.column_config.TextColumn("PACIENTE", width="small"),
+                "GLASGOW": st.column_config.TextColumn("GLASGOW", width=225),
+                "RASS": st.column_config.TextColumn("RASS", width=180),
+                "SAPSIII": st.column_config.TextColumn("SAPS III", width="small"),
+                "BRADEN": st.column_config.TextColumn("BRADEN", width=150),
+                "MORSE": st.column_config.TextColumn("MORSE", width="small"),
+                "FUGULIN": st.column_config.TextColumn("FUGULIN", width=150),
+                "PRECAUCAO": st.column_config.TextColumn("PRECAUÇÃO", width="medium"),
+                "GRUPOS_PACIENTE": st.column_config.TextColumn("GRUPOS", width="small"),
+                "ALERGIA": st.column_config.TextColumn("ALERGIA", width="small"),
+                "GPT_STATUS": st.column_config.TextColumn("GPT_STATUS", width="small"),
+            }    
+            
             # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO
             #df_styled = df_selecionado.style.applymap(cor_status, subset=['GPT_STATUS'])
             
@@ -438,8 +455,8 @@ if __name__ == "__main__":
             st.write("# H - Intensiva B ")
             st.write(f'Atualizado: {datetime.datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}')
             
-            #Exibindo data frame:
-            st.dataframe(df_styled,hide_index=True, height= calcular_altura_dataframe(df.shape[0]) ,use_container_width=True)
+            #Exibindo data frame:            
+            st.dataframe(df_styled,hide_index=True, height= calcular_altura_dataframe(df.shape[0]) ,use_container_width=True, column_config=column_config)
             
 
             print(f'{agora()} - Total de: {str(df.shape[0])} pacientes')

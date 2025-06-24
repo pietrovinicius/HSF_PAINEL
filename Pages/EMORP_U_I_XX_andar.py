@@ -1,6 +1,5 @@
-#AND APV.CD_SETOR_ATENDIMENTO = 63
-# H - Intensiva F 2º ANDAR
-
+#AND APV.CD_SETOR_ATENDIMENTO = ???
+# EMORP - SEMI I. 6º ANDAR
 '''
 58	H - Intensiva A
 59	H - Intensiva B
@@ -23,21 +22,15 @@ import locale
 import datetime
 
 #Configurando pagina para exibicao em modo WIDE:
-st.set_page_config(layout="wide",initial_sidebar_state="collapsed",page_title="H - Intensiva F ")
+st.set_page_config(layout="wide",initial_sidebar_state="collapsed",page_title="EMORP - SEMI I. 6º ANDAR")
+
+#SETOR:
+
 
 def agora():
     agora = datetime.datetime.now()
     agora = agora.strftime("%Y-%m-%d %H-%M-%S")
     return str(agora)
-
-def calcular_altura_dataframe(num_linhas, altura_base=150, altura_por_linha=30, max_altura=925):
-            """Calcula a altura apropriada para um DataFrame com base no número de linhas.
-                exemplo:
-                        #altura_df = calcular_altura_dataframe(df_aguard_ps.shape[0])
-                        #st.dataframe(df_aguard_ps, hide_index=True, use_container_width=True, height=altura_df)    
-            """
-            altura = altura_base + (num_linhas * altura_por_linha)
-            return min(altura, max_altura)
 
 #apontamento para usar o Think Mod
 def encontrar_diretorio_instantclient(nome_pasta="instantclient-basiclite-windows.x64-23.6.0.24.10\\instantclient_23_6"):
@@ -145,13 +138,13 @@ def pacientes_escalas():
                                 order by	1 desc
                                 FETCH FIRST 1 ROWS ONLY
                             ) AS SAPSIII,
-
+                            
                             --RASS
                             (
                                 SELECT
                                   CASE 
-                                    WHEN LENGTH(obter_valor_dominio(2088, IE_RASS)) > 21 THEN 
-                                      SUBSTR(obter_valor_dominio(2088, IE_RASS), 1, 21) || '...'
+                                    WHEN LENGTH(obter_valor_dominio(2088, IE_RASS)) > 56 THEN 
+                                      SUBSTR(obter_valor_dominio(2088, IE_RASS), 1, 56) || '...'
                                     ELSE 
                                       obter_valor_dominio(2088, IE_RASS)
                                   END AS DS_AGITACAO_SEDACAO
@@ -161,7 +154,7 @@ def pacientes_escalas():
                                   AND obter_se_reg_lib_atencao(obter_pessoa_atendimento(nr_atendimento, 'C'),cd_profissional,ie_nivel_atencao,nm_usuario,374) = 'S'
                                 FETCH FIRST 1 ROWS ONLY
                             ) RASS,
-                            
+
                             --fugulin
                             (
                                 SELECT 
@@ -338,7 +331,7 @@ def pacientes_escalas():
 
                         --=============================================== REGRAS DE NEGOCIO: --===============================================
                         WHERE PH.dt_horario between SYSDATE - 1 and SYSDATE
-                        AND APV.CD_SETOR_ATENDIMENTO = 63
+                        AND APV.CD_SETOR_ATENDIMENTO = 58
                         AND APV.DT_ALTA IS NULL
                         GROUP BY 
                             APV.CD_SETOR_ATENDIMENTO,
@@ -377,10 +370,10 @@ def pacientes_escalas():
                 df = pd.DataFrame(results, columns=[desc[0] for desc in cursor.description])
                 
                 # Visualizar os primeiros 5 registros
-                print("# H - Intensiva F ")
+                print("# EMORP - SEMI I. 6º ANDAR")
                 #print(f'data_frame:\n{df.head(5)}')
                 #print("DataFrame salvo com sucesso!")
-                #print("H - Intensiva F ")
+                #print("EMORP - SEMI I. 6º ANDAR")
 
     except Exception as erro:
         print(f"Erro Inexperado:\n{erro}")
@@ -403,7 +396,7 @@ logo_path = 'HSF_LOGO_-_1228x949_001.png'
 if __name__ == "__main__":
     try:
         while True:
-            print(f'\n{agora()} - H - Intensiva F  - if __name__ == "__main__" ')
+            print(f'\n{agora()} - EMORP - SEMI I. 6º ANDAR - if __name__ == "__main__" ')
             st.logo(logo_path,size="large")
 
             df = pacientes_escalas()
@@ -424,27 +417,9 @@ if __name__ == "__main__":
             )
             
             # SELECIONA AS COLUNAS ANTES DE ESTILIZAR
-            #colunas_selecionadas = ['LEITO', 'ATENDIMENTO','PACIENTE','GLASGOW','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE', 'ALERGIA' , 'GPT_STATUS']
             colunas_selecionadas = ['LEITO', 'ATENDIMENTO','PACIENTE','GLASGOW','RASS','SAPSIII','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE', 'ALERGIA' , 'GPT_STATUS']
             df_selecionado = df[colunas_selecionadas]
     
-            # Define a configuração de largura para cada coluna para garantir consistência
-            column_config = {
-                "LEITO": st.column_config.TextColumn("LEITO", width="small"),
-                "ATENDIMENTO": st.column_config.TextColumn("ATEND", width="small"),
-                "PACIENTE": st.column_config.TextColumn("PACIENTE", width="small"),
-                "GLASGOW": st.column_config.TextColumn("GLASGOW", width=225),
-                "RASS": st.column_config.TextColumn("RASS", width=180),
-                "SAPSIII": st.column_config.TextColumn("SAPS III", width="small"),
-                "BRADEN": st.column_config.TextColumn("BRADEN", width=150),
-                "MORSE": st.column_config.TextColumn("MORSE", width="small"),
-                "FUGULIN": st.column_config.TextColumn("FUGULIN", width=150),
-                "PRECAUCAO": st.column_config.TextColumn("PRECAUÇÃO", width="medium"),
-                "GRUPOS_PACIENTE": st.column_config.TextColumn("GRUPOS", width="small"),
-                "ALERGIA": st.column_config.TextColumn("ALERGIA", width="small"),
-                "GPT_STATUS": st.column_config.TextColumn("GPT_STATUS", width="small"),
-            }
-            
             # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO
             #df_styled = df_selecionado.style.applymap(cor_status, subset=['GPT_STATUS'])
             
@@ -453,11 +428,13 @@ if __name__ == "__main__":
                                            .map(cor_status, subset=['ALERGIA'])
                                           
             
-            st.write("# H - Intensiva F ")
+            st.write("# EMORP - SEMI I. 6º ANDAR")
             st.write(f'Atualizado: {datetime.datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}')
             
-            #Exibindo data frame:            
-            st.dataframe(df_styled,hide_index=True, height= calcular_altura_dataframe(df.shape[0]) ,use_container_width=True, column_config=column_config)
+            #Exibindo data frame:
+            #st.dataframe(df[['LEITO', 'ATENDIMENTO','PACIENTE','MEWS','BRADEN','MORSE','FUGULIN','PRECAUCAO', 'GRUPOS_PACIENTE' , 'GPT_STATUS', 'GLASGOW']],hide_index=True, use_container_width=True)
+            st.dataframe(df_styled,hide_index=True, height=520,use_container_width=True)
+            
 
             print(f'{agora()} - Total de: {str(df.shape[0])} pacientes')
             st.write('### Ocupação: ' + str(df.shape[0]) + ' pacientes')
@@ -480,17 +457,19 @@ if __name__ == "__main__":
                 GLASGOW = df[df['GLASGOW'] != '-']
                 GLASGOW = len(GLASGOW)
                 #print(f'GLASGOW: {GLASGOW}')
-                st.write(f'Glasgow: {GLASGOW}')
+                st.write(f'Glasgow: {GLASGOW}')  
+                
                 RASS = df[['RASS']].shape[0]
                 RASS = df[df['RASS'] != '-']
                 RASS = len(RASS)
                 #print(f'RASS: {RASS}')
-                st.write(f'RASS: {RASS}')                                 
+                st.write(f'RASS: {RASS}')                 
+                
                 SAPSIII = df[['SAPSIII']].shape[0]
                 SAPSIII = df[df['SAPSIII'] != '-']
                 SAPSIII = len(SAPSIII)
                 #print(f'SAPSIII: {SAPSIII}')
-                st.write(f'Saps3: {SAPSIII}')                
+                st.write(f'Saps3: {SAPSIII}')               
                 MORSE = df[['MORSE']].shape[0]
                 MORSE = df[df['MORSE'] != '-']
                 MORSE = len(MORSE)
@@ -505,7 +484,7 @@ if __name__ == "__main__":
             print(f'{agora()} - Pausar por 600 segundos!')
             
             time.sleep(600)  # Pausar por 600 segundos            
-            print(f'H - Intensiva F \nst.rerun()\n')
+            print(f'EMORP - SEMI I. 6º ANDAR\nst.rerun()\n')
             st.rerun()
         
     except Exception as err: 

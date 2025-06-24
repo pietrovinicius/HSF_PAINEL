@@ -436,7 +436,7 @@ if __name__ == "__main__":
                 "SAPSIII": st.column_config.TextColumn("SAPS III", width="small"),
                 "BRADEN": st.column_config.TextColumn("BRADEN", width=150),
                 "MORSE": st.column_config.TextColumn("MORSE", width="small"),
-                "FUGULIN": st.column_config.TextColumn("FUGULIN", width="medium"),
+                "FUGULIN": st.column_config.TextColumn("FUGULIN", width=150),
                 "PRECAUCAO": st.column_config.TextColumn("PRECAUÇÃO", width="medium"),
                 "GRUPOS_PACIENTE": st.column_config.TextColumn("GRUPOS", width="small"),
                 "ALERGIA": st.column_config.TextColumn("ALERGIA", width="small"),
