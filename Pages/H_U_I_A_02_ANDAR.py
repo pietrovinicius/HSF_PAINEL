@@ -442,7 +442,7 @@ if __name__ == "__main__":
                 "BRADEN": st.column_config.TextColumn("BRADEN", width=150),
                 "MORSE": st.column_config.TextColumn("MORSE", width="small"),
                 "FUGULIN": st.column_config.TextColumn("FUGULIN", width=150),
-                "PRECAUCAO": st.column_config.TextColumn("PRECAUÇÃO", width="medium"),
+                "PRECAUCAO": st.column_config.TextColumn("PRECAUÇÃO", width=150),
                 "GRUPOS_PACIENTE": st.column_config.TextColumn("GRUPOS", width="small"),
                 "ALERGIA": st.column_config.TextColumn("ALERGIA", width="small"),
                 "GPT_STATUS": st.column_config.TextColumn("GPT_STATUS", width="small"),
