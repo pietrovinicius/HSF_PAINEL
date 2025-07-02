@@ -163,7 +163,18 @@ def pacientes_escalas():
                                   AND obter_se_reg_lib_atencao(obter_pessoa_atendimento(nr_atendimento, 'C'),cd_profissional,ie_nivel_atencao,nm_usuario,374) = 'S'
                                 FETCH FIRST 1 ROWS ONLY
                             ) RASS,
-                            
+
+                            --CD_RASS
+                            (
+                                SELECT                                   
+                                      IE_RASS                                 
+                                FROM ESCALA_RICHMOND
+                                WHERE 1 = 1
+                                  AND nr_atendimento = APV.NR_ATENDIMENTO
+                                  AND obter_se_reg_lib_atencao(obter_pessoa_atendimento(nr_atendimento, 'C'),cd_profissional,ie_nivel_atencao,nm_usuario,374) = 'S'
+                                FETCH FIRST 1 ROWS ONLY
+                            ) CD_RASS,   
+
                             --fugulin
                             (
                                 SELECT 
@@ -399,7 +410,27 @@ def cor_status(val):
     else:
         return ''
 
-
+def cor_cdrass(val):
+    # Aplica cor de fundo à célula RASS com base no valor, com cores suavizadas.
+    try:
+        v = int(val)
+        if abs(v) == 4:
+            return 'background-color: #D84B47; color: white; font-weight: bold'  # Sedação profunda / Agressivo (vermelho suave)
+        elif abs(v) == 3:
+            return 'background-color: #ef9642; color: black; font-weight: bold'  # Sedação moderada / Muito agitado (laranja suave)
+        elif abs(v) == 2:
+            return 'background-color: #F4D700; color: black; font-weight: bold'  # Sedação leve / Agitado (amarelo suave)
+        elif abs(v) == 1:
+            return 'background-color: #ffc8cb; color: black; font-weight: bold'  # Sonolento / Inquieto (rosa suave)
+        elif v == 0:
+            return 'background-color: #66D4C7; color: black; font-weight: bold'  # Alerta, calmo (verde suave)
+        elif v == -5:
+            return 'background-color: #8B0000; color: white; font-weight: bold'  # Incapaz de ser despertado (vinho suave)
+        else:
+            return ''
+    except ValueError:
+        return ''  # Caso não seja um número
+    
 logo_path = 'HSF_LOGO_-_1228x949_001.png'
 
 if __name__ == "__main__":
@@ -452,9 +483,13 @@ if __name__ == "__main__":
             #df_styled = df_selecionado.style.applymap(cor_status, subset=['GPT_STATUS'])
             
             # APLICA O ESTILO APENAS AO DATAFRAME SELECIONADO
-            df_styled = df_selecionado.style.map(cor_status, subset=['GPT_STATUS'])\
-                                           .map(cor_status, subset=['ALERGIA'])
-                                          
+            #df_styled = df_selecionado.style.map(cor_status, subset=['GPT_STATUS'])\
+            #                               .map(cor_status, subset=['ALERGIA'])
+            if 'CD_RASS' in df.columns:
+                df_styled = df_selecionado.style\
+                .applymap(cor_status, subset=['GPT_STATUS'])\
+                .applymap(cor_status, subset=['ALERGIA'])\
+                .apply(lambda row: pd.Series({'RASS': cor_cdrass(df.loc[row.name, 'CD_RASS'])}), axis=1)                              
             
             st.write("# H - Intensiva A ")
             st.write(f'Atualizado: {datetime.datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}')
