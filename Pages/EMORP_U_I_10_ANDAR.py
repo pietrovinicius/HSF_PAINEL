@@ -421,38 +421,7 @@ if __name__ == "__main__":
             st.write('\n\n\n')
             st.write('___________________')
 
-            with st.sidebar:
-                st.write('# Indicadores:')
-                BRADEN = df[['BRADEN']].shape[0]
-                BRADEN = df[df['BRADEN'] != '-']
-                BRADEN = len(BRADEN)
-                #print(f'BRADEN: {BRADEN}')
-                st.write(f'Braden: {BRADEN}')
-                FUGULIN = df[['FUGULIN']].shape[0]
-                FUGULIN = df[df['FUGULIN'] != '-']
-                FUGULIN = len(FUGULIN)
-                #print(f'FUGULIN: {FUGULIN}')
-                st.write(f'Fugulin: {FUGULIN}')
-                GLASGOW = df[['GLASGOW']].shape[0]
-                GLASGOW = df[df['GLASGOW'] != '-']
-                GLASGOW = len(GLASGOW)
-                #print(f'GLASGOW: {GLASGOW}')
-                st.write(f'Glasgow: {GLASGOW}')
-                MEWS = df[['MEWS']].shape[0]
-                MEWS = df[df['MEWS'] != '-']
-                MEWS = len(MEWS)
-                #print(f'MEWS: {MEWS}')
-                st.write(f'Mews: {MEWS}')
-                MORSE = df[['MORSE']].shape[0]
-                MORSE = df[df['MORSE'] != '-']
-                MORSE = len(MORSE)
-                #print(f'MORSE: {MORSE}')
-                st.write(f'Morse: {MORSE}')
-                PRECAUCAO = df[['PRECAUCAO']].shape[0]
-                PRECAUCAO = df[df['PRECAUCAO'] != '-']
-                PRECAUCAO = len(PRECAUCAO)
-                #print(f'PRECAUCAO: {PRECAUCAO}')
-                st.write(f'Precaução: {PRECAUCAO}')
+ 
 
             print(f'{agora()} - Pausar por 600 segundos!')
             
