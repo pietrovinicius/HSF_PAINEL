@@ -4,7 +4,7 @@
 64   PAI - U.I. 1? ANDAR
 65   PAI - U.I. 2? ANDAR
 66   PAI - U.I. 3? ANDAR
-110  LAR SANTA CLARA
+110  SANTA CLARA
 208  PAI - U.I 2? ANDAR - ADOLESCENTE
 252	 PAI - HOSPITAL DIA
 '''
@@ -21,7 +21,7 @@ import locale
 import datetime
 
 #Configurando pagina para exibicao em modo WIDE:
-st.set_page_config(layout="wide",initial_sidebar_state="collapsed",page_title="LAR SANTA CLARA ")
+st.set_page_config(layout="wide",initial_sidebar_state="collapsed",page_title="SANTA CLARA ")
 
 def agora():
     agora = datetime.datetime.now()
@@ -279,7 +279,7 @@ def pacientes_escalas():
                 df = pd.DataFrame(results, columns=[desc[0] for desc in cursor.description])
                 
                 # Visualizar os primeiros 5 registros
-                print("# LAR SANTA CLARA")
+                print("# SANTA CLARA")
                 
 
     except Exception as erro:
@@ -326,7 +326,7 @@ logo_path = 'HSF_LOGO_-_1228x949_001.png'
 if __name__ == "__main__":
     try:
         while True:
-            print(f'\n{agora()} - LAR SANTA CLARA  - if __name__ == "__main__" ')
+            print(f'\n{agora()} - SANTA CLARA  - if __name__ == "__main__" ')
             st.logo(logo_path,size="large")
 
             df = pacientes_escalas()
@@ -384,7 +384,7 @@ if __name__ == "__main__":
                 .applymap(cor_status, subset=['ALERGIA'])\
                 .apply(lambda row: pd.Series({'RASS': cor_cdrass(df.loc[row.name, 'CD_RASS'])}), axis=1)
             
-            st.write("# LAR SANTA CLARA")
+            st.write("# SANTA CLARA")
             st.write(f'Atualizado: {datetime.datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}')
             
             #Exibindo data frame:
@@ -401,7 +401,7 @@ if __name__ == "__main__":
             print(f'{agora()} - Pausar por 600 segundos!')
             
             time.sleep(600)  # Pausar por 600 segundos            
-            print(f'PLAR SANTA CLARA \nst.rerun()\n')
+            print(f'SANTA CLARA \nst.rerun()\n')
             st.rerun()
         
     except Exception as err: 

@@ -241,7 +241,7 @@ def pacientes_escalas():
 
                         --=============================================== REGRAS DE NEGOCIO: --===============================================
                         WHERE PH.DT_HORARIO BETWEEN SYSDATE - 1 AND SYSDATE
-                        AND APV.CD_SETOR_ATENDIMENTO = 65
+                        AND APV.CD_SETOR_ATENDIMENTO IN (65,208)
                         /*AND APV.CD_SETOR_ATENDIMENTO IN (110,252,208,64,65,66)*/
                         AND APV.DT_ALTA IS NULL
 
